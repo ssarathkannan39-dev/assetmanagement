@@ -1,6 +1,6 @@
 import { useEffect, useState, useCallback } from 'react';
 import { Link } from 'react-router-dom';
-import api from '../api/client'; // adjust to your actual axios/fetch wrapper path
+import api from '../api/client.js';
 
 const CATEGORIES = [
   { value: '', label: 'All' },
@@ -53,7 +53,7 @@ export default function Documents() {
       setPagination(data.pagination);
     } catch {
       setError('Could not load documents - try again');
-    } finally {
+    } finally {   
       setLoading(false);
     }
   }, [category, search]);
@@ -63,8 +63,18 @@ export default function Documents() {
     return () => clearTimeout(t);
   }, [fetchDocs]);
 
-  const handleDownload = (assetId, docId) => {
-    window.open(`${api.defaults.baseURL}/assets/${assetId}/documents/${docId}/download`, '_blank');
+  const handleDownload = async (assetId, docId, originalName) => {
+    try {
+      const response = await api.get(`/assets/${assetId}/documents/${docId}/download`, { responseType: 'blob' });
+      const url = URL.createObjectURL(response.data);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = originalName || 'document';
+      link.click();
+      URL.revokeObjectURL(url);
+    } catch {
+      setError('Could not download the document - try again');
+    }
   };
 
   const handleDelete = async (assetId, docId) => {
@@ -139,7 +149,7 @@ export default function Documents() {
               <span className={`text-[10px] px-2 py-0.5 rounded-full border ${CATEGORY_COLOR[doc.category] || CATEGORY_COLOR.other}`}>
                 {doc.category}
               </span>
-              <button onClick={() => handleDownload(doc.assetId, doc._id)} className="text-xs text-accent hover:underline">
+              <button onClick={() => handleDownload(doc.assetId, doc._id, doc.originalName)} className="text-xs text-accent hover:underline">
                 Download
               </button>
               <button onClick={() => handleDelete(doc.assetId, doc._id)} className="text-xs text-red-400 hover:underline">

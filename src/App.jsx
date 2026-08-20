@@ -1,4 +1,4 @@
-import { Navigate, Route, Routes } from 'react-router-dom';
+import { Link, Navigate, Route, Routes, useLocation } from 'react-router-dom';
 import { useAuth } from './context/AuthContext.jsx';
 import AppLayout from './layouts/AppLayout.jsx';
 import Login from './pages/Login.jsx';
@@ -8,27 +8,72 @@ import AssetDetail from './pages/AssetDetail.jsx';
 import AssetForm from './pages/AssetForm.jsx';
 import Assignments from './pages/Assignments.jsx';
 import Maintenance from './pages/Maintenance.jsx';
-import AuditLog from './pages/AuditLog.jsx';
+import AuditLog from './pages/AuditLog.jsx';     
 import Scan from './pages/Scan.jsx';
 import Documents from './components/Documents.jsx';
+import Accessories from './pages/Accessories.jsx';
+import Consumables from './pages/Consumables.jsx';
+import Licenses from './pages/Licenses.jsx';
+import Profile from './pages/Profile.jsx';
+import Reports from './pages/Reports.jsx';
 
 function ProtectedRoute({ children }) {
   const { user, loading } = useAuth();
+  const location = useLocation();
+
   if (loading) {
     return (
-      <div className="h-screen flex items-center justify-center bg-ink text-muted stencil text-sm">
+      <div className="h-screen flex items-center justify-center bg-[#edf2f7] text-accent stencil text-sm">
         LOADING SYSTEM…
       </div>
     );
   }
-  if (!user) return <Navigate to="/login" replace />;
+  if (!user) {
+    return <Navigate to="/login" replace state={{ from: location }} />;
+  }
   return children;
+}
+
+function PublicOnlyRoute({ children }) {
+  const { user, loading } = useAuth();
+
+  if (loading) {
+    return (
+      <div className="h-screen flex items-center justify-center bg-[#edf2f7] text-accent stencil text-sm">
+        LOADING SYSTEM…
+      </div>
+    );
+  }
+
+  return user ? <Navigate to="/" replace /> : children;
+}
+
+function NotFound() {
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-[#edf2f7] px-4">
+      <div className="text-center">
+        <div className="stencil text-5xl font-bold text-accent">404</div>
+        <h1 className="stencil mt-4 text-lg uppercase tracking-widest text-[#172033]">Page not found</h1>
+        <p className="mt-2 text-sm text-muted">The requested asset portal page does not exist.</p>
+        <Link to="/" className="btn-primary mt-6 inline-block">
+          Return to dashboard
+        </Link>
+      </div>
+    </div>
+  );
 }
 
 export default function App() {
   return (
     <Routes>
-      <Route path="/login" element={<Login />} />
+      <Route
+        path="/login"
+        element={
+          <PublicOnlyRoute>
+            <Login />
+          </PublicOnlyRoute>
+        }
+      />
       <Route
         path="/"
         element={
@@ -40,15 +85,20 @@ export default function App() {
         <Route index element={<Dashboard />} />
         <Route path="assets" element={<Assets />} />
         <Route path="assets/new" element={<AssetForm />} />
-        <Route path="assets/:id" element={<AssetDetail />} />
         <Route path="assets/:id/edit" element={<AssetForm />} />
+        <Route path="assets/:id" element={<AssetDetail />} />
         <Route path="assignments" element={<Assignments />} />
         <Route path="maintenance" element={<Maintenance />} />
+        <Route path="accessories" element={<Accessories />} />
+        <Route path="consumables" element={<Consumables />} />
+        <Route path="licenses" element={<Licenses />} />
+        <Route path="profile" element={<Profile />} />
+        <Route path="reports" element={<Reports />} />
         <Route path="audit-log" element={<AuditLog />} />
         <Route path="documents" element={<Documents />} />
         <Route path="scan" element={<Scan />} />
       </Route>
-      <Route path="*" element={<Navigate to="/" replace />} />
+      <Route path="*" element={<NotFound />} />
     </Routes>
   );
 }

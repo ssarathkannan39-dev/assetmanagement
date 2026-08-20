@@ -2,7 +2,7 @@ import axios from 'axios';
 
 const client = axios.create({
   baseURL: '/api',
-  withCredentials: true, // send the httpOnly refresh cookie
+  withCredentials: true,
 });
 
 let accessToken = null;
@@ -18,18 +18,20 @@ export function getAccessToken() {
 
 client.interceptors.request.use((config) => {
   if (accessToken) {
+    config.headers = config.headers || {};
     config.headers.Authorization = `Bearer ${accessToken}`;
   }
   return config;
 });
 
 client.interceptors.response.use(
-  (res) => res,
+  (response) => response,
   async (error) => {
     const original = error.config;
     const status = error.response?.status;
+    const url = original?.url || '';
 
-    if (status === 401 && !original._retry && !original.url.includes('/auth/login')) {
+    if (status === 401 && original && !original._retry && !url.includes('/auth/login') && !url.includes('/auth/refresh')) {
       original._retry = true;
       try {
         if (!refreshingPromise) {
@@ -39,12 +41,13 @@ client.interceptors.response.use(
         }
         const { data } = await refreshingPromise;
         setAccessToken(data.accessToken);
+        original.headers = original.headers || {};
         original.headers.Authorization = `Bearer ${data.accessToken}`;
         return client(original);
-      } catch (refreshErr) {
+      } catch (refreshError) {
         setAccessToken(null);
         window.dispatchEvent(new CustomEvent('auth:expired'));
-        return Promise.reject(refreshErr);
+        return Promise.reject(refreshError);
       }
     }
 

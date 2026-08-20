@@ -1,5 +1,5 @@
 import { useCallback, useRef, useState } from 'react';
-import api from '../lib/api'; // adjust to your actual axios/fetch wrapper path
+import api from '../api/client.js';
 
 const CATEGORIES = [
   { value: 'invoice', label: 'Invoice' },
@@ -92,9 +92,18 @@ export default function DocumentVault({ assetId, documents, onChange }) {
     }
   };
 
-  const handleDownload = (docId, originalName) => {
-    // Uses the browser's normal download flow against the authenticated API origin.
-    window.open(`${api.defaults.baseURL}/assets/${assetId}/documents/${docId}/download`, '_blank');
+  const handleDownload = async (docId, originalName) => {
+    try {
+      const response = await api.get(`/assets/${assetId}/documents/${docId}/download`, { responseType: 'blob' });
+      const url = URL.createObjectURL(response.data);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = originalName || 'document';
+      link.click();
+      URL.revokeObjectURL(url);
+    } catch {
+      setError('Could not download the document - try again');
+    }
   };
 
   return (

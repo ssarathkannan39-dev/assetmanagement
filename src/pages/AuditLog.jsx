@@ -70,7 +70,7 @@ export default function AuditLog() {
                   <th className="text-left px-4 py-3">By</th>
                 </tr>
               </thead>
-              <tbody>
+              <tbody>   
                 {items.map((log) => (
                   <tr key={log._id} className="border-b border-line last:border-0 hover:bg-panel2/60 transition-colors">
                     <td className="px-4 py-3 text-muted font-mono text-xs">{fmtDateTime(log.createdAt)}</td>

@@ -168,7 +168,7 @@ export default function AssetDetail() {
                   <div key={h._id} className="flex items-center justify-between text-sm border-b border-line last:border-0 pb-3 last:pb-0">
                     <div>
                       <div className="text-zinc-100">{h.assignedTo.name} {h.assignedTo.department ? `· ${h.assignedTo.department}` : ''}</div>
-                      <div className="text-muted text-xs">{fmtDate(h.assignedDate)} → {h.returnDate ? fmtDate(h.returnDate) : 'present'}</div>
+                      <div className="text-muted text-xs">{fmtDate(h.checkoutDate)} → {h.checkinDate ? fmtDate(h.checkinDate) : 'present'}</div>
                     </div>
                     <StatusChip status={h.status} />
                   </div>
@@ -215,7 +215,7 @@ export default function AssetDetail() {
             <div className="card p-6">
               <div className="text-[11px] font-mono uppercase tracking-wider text-muted mb-3">Currently Assigned To</div>
               <div className="text-zinc-100 text-sm font-medium">{asset.currentAssignment.assignedTo?.name}</div>
-              <div className="text-muted text-xs mt-1">Since {fmtDate(asset.currentAssignment.assignedDate)}</div>
+              <div className="text-muted text-xs mt-1">Since {fmtDate(asset.currentAssignment.checkoutDate)}</div>
             </div>
           )}
         </div>

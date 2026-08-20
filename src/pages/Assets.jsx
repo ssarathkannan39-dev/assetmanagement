@@ -37,6 +37,23 @@ export default function Assets() {
     [search, category, status]
   );
 
+  const remove = async (asset) => {
+    if (!window.confirm(`Delete ${asset.name}? This cannot be undone.`)) return;
+    try { await client.delete(`/assets/${asset._id}`); fetchAssets(pagination.page); } catch (err) { setError(err.response?.data?.message || 'Could not delete asset.'); }
+  };
+
+  const clone = async (asset) => {
+    try {
+      const payload = {
+        name: `${asset.name} (copy)`, category: asset.category, brand: asset.brand,
+        model: asset.model, purchaseCost: asset.purchaseCost, vendor: asset.vendor,
+        warrantyExpiry: asset.warrantyExpiry, location: asset.location, notes: asset.notes,
+      };
+      await client.post('/assets', payload);
+      fetchAssets(pagination.page);
+    } catch (err) { setError(err.response?.data?.message || 'Could not clone asset.'); }
+  };
+
   useEffect(() => {
     const t = setTimeout(() => fetchAssets(1), 300);
     return () => clearTimeout(t);
@@ -94,6 +111,7 @@ export default function Assets() {
                 <th className="text-left px-4 py-3">Status</th>
                 <th className="text-left px-4 py-3">Location</th>
                 <th className="text-left px-4 py-3">Serial</th>
+                <th className="text-right px-4 py-3">Actions</th>
               </tr>
             </thead>
             <tbody>
@@ -109,6 +127,13 @@ export default function Assets() {
                   <td className="px-4 py-3"><StatusChip status={a.status} /></td>
                   <td className="px-4 py-3 text-muted">{a.location || '—'}</td>
                   <td className="px-4 py-3 text-muted font-mono text-xs">{a.serialNumber || '—'}</td>
+                  <td className="px-4 py-3 text-right">
+                    <div className="flex justify-end gap-1">
+                      <Link to={`/assets/${a._id}/edit`} className="btn-outline px-2 py-1 text-[10px]">Edit</Link>
+                      <button onClick={() => clone(a)} className="btn-outline px-2 py-1 text-[10px]">Clone</button>
+                      <button onClick={() => remove(a)} className="rounded border border-red-200 px-2 py-1 text-[10px] text-red-500 hover:bg-red-50">Delete</button>
+                    </div>
+                  </td>
                 </tr>
               ))}
             </tbody>

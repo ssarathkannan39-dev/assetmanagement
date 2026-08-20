@@ -4,14 +4,14 @@ export default {
   theme: {
     extend: {
       colors: {
-        ink: '#0d1210',
-        panel: '#141a17',
-        panel2: '#1b2320',
-        line: '#2a332e',
-        accent: '#ff6a2b',
-        accent2: '#ffb020',
-        mint: '#5fead4',
-        muted: '#8a9690',
+        ink: '#172033',
+        panel: '#ffffff',
+        panel2: '#f3f6fa',
+        line: '#dce5ef',
+        accent: '#1f6fb2',
+        accent2: '#0b91c8',
+        mint: '#159a84',
+        muted: '#718096',
       },
       fontFamily: {
         display: ['"Space Mono"', 'monospace'],
@@ -19,7 +19,7 @@ export default {
         mono: ['"IBM Plex Mono"', 'monospace'],
       },
       boxShadow: {
-        hard: '4px 4px 0 0 rgba(0,0,0,0.35)',
+        hard: '0 4px 12px 0 rgba(23,32,51,0.12)',
       },
     },
   },
