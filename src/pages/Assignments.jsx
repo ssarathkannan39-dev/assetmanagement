@@ -49,7 +49,7 @@ export default function Assignments() {
           <h1 className="stencil text-lg font-semibold uppercase tracking-widest text-white">
             Assignments
           </h1>
-          <p className="text-xs text-muted">Track which asset is out with whom, and when it's due back.</p>
+          <p className="text-xs text-muted">Track which asset is out with whom, and when it is due back.</p>
         </div>
         <button
           onClick={() => setModal({ mode: 'checkout' })}

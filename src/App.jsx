@@ -15,7 +15,10 @@ import Accessories from './pages/Accessories.jsx';
 import Consumables from './pages/Consumables.jsx';
 import Licenses from './pages/Licenses.jsx';
 import Profile from './pages/Profile.jsx';
+import UserDashboard from './pages/UserDashboard.jsx';
 import Reports from './pages/Reports.jsx';
+import Requirements from './pages/Requirements.jsx';
+import SuperDashboard from './pages/SuperDashboard.jsx';
 
 function ProtectedRoute({ children }) {
   const { user, loading } = useAuth();
@@ -23,8 +26,8 @@ function ProtectedRoute({ children }) {
 
   if (loading) {
     return (
-      <div className="h-screen flex items-center justify-center bg-[#edf2f7] text-accent stencil text-sm">
-        LOADING SYSTEM…
+      <div className="h-screen flex items-center justify-center bg-[var(--bg)] text-accent stencil text-sm">
+        Loading workspace...
       </div>
     );
   }
@@ -35,12 +38,12 @@ function ProtectedRoute({ children }) {
 }
 
 function PublicOnlyRoute({ children }) {
-  const { user, loading } = useAuth();
+  const { user, loading } = useAuth();   
 
   if (loading) {
     return (
-      <div className="h-screen flex items-center justify-center bg-[#edf2f7] text-accent stencil text-sm">
-        LOADING SYSTEM…
+      <div className="h-screen flex items-center justify-center bg-[var(--bg)] text-accent stencil text-sm">
+        Loading workspace...
       </div>
     );
   }
@@ -48,12 +51,24 @@ function PublicOnlyRoute({ children }) {
   return user ? <Navigate to="/" replace /> : children;
 }
 
+function HomeRoute() {
+  const { user } = useAuth();
+  if (user?.role === 'asset_user') return <Navigate to="/my-assets" replace />;
+  if (user?.role === 'superadmin') return <Navigate to="/super-dashboard" replace />;
+  return <Dashboard />;
+}
+
+function SuperOnlyRoute() {
+  const { user } = useAuth();
+  return user?.role === 'superadmin' ? <SuperDashboard /> : <Navigate to="/" replace />;
+}
+
 function NotFound() {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[#edf2f7] px-4">
+    <div className="min-h-screen flex items-center justify-center bg-[var(--bg)] px-4">
       <div className="text-center">
         <div className="stencil text-5xl font-bold text-accent">404</div>
-        <h1 className="stencil mt-4 text-lg uppercase tracking-widest text-[#172033]">Page not found</h1>
+        <h1 className="stencil mt-4 text-lg uppercase tracking-widest text-ink">Page not found</h1>
         <p className="mt-2 text-sm text-muted">The requested asset portal page does not exist.</p>
         <Link to="/" className="btn-primary mt-6 inline-block">
           Return to dashboard
@@ -82,7 +97,7 @@ export default function App() {
           </ProtectedRoute>
         }
       >
-        <Route index element={<Dashboard />} />
+        <Route index element={<HomeRoute />} />
         <Route path="assets" element={<Assets />} />
         <Route path="assets/new" element={<AssetForm />} />
         <Route path="assets/:id/edit" element={<AssetForm />} />
@@ -93,7 +108,10 @@ export default function App() {
         <Route path="consumables" element={<Consumables />} />
         <Route path="licenses" element={<Licenses />} />
         <Route path="profile" element={<Profile />} />
+        <Route path="my-assets" element={<UserDashboard />} />
+        <Route path="super-dashboard" element={<SuperOnlyRoute />} />
         <Route path="reports" element={<Reports />} />
+        <Route path="requirements" element={<Requirements />} />
         <Route path="audit-log" element={<AuditLog />} />
         <Route path="documents" element={<Documents />} />
         <Route path="scan" element={<Scan />} />

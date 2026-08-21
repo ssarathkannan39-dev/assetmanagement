@@ -61,7 +61,7 @@ export default function Scan() {
         () => {} // ignore per-frame scan failures
       );
       setScanning(true);
-    } catch (err) {
+    } catch {
       setError('Could not access camera. Check browser permissions, or enter the tag manually below.');
     }
   };

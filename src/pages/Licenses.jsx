@@ -69,7 +69,7 @@ export default function Licenses() {
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
           <h1 className="stencil text-lg font-semibold uppercase tracking-widest text-white">Licenses</h1>
-          <p className="text-xs text-muted">Software seats, expiries, and who's using what.</p>
+          <p className="text-xs text-muted">Software seats, expiries, and who is using what.</p>
         </div>
         <button
           onClick={() => setShowCreate(true)}

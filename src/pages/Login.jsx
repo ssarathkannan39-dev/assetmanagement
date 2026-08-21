@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext.jsx';
 import { ErrorBanner } from '../components/Common.jsx';
+import BrandMark from '../components/BrandMark.jsx';
 
 export default function Login() {
   const { login } = useAuth();
@@ -27,18 +28,18 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-ink px-4">
-      <div className="w-full max-w-sm">
-        <div className="text-center mb-8">
-          <div className="stencil text-3xl font-bold text-zinc-50 tracking-tight">
-            ASSET<span className="text-accent">RAK</span>
-          </div>
-          <div className="text-[11px] font-mono uppercase tracking-[0.25em] text-muted mt-2">
-            IT Inventory Control System
+    <div className="relative flex min-h-screen items-center justify-center overflow-hidden bg-ink px-4 py-10">
+      <div className="absolute -left-24 -top-24 h-80 w-80 rounded-full bg-accent opacity-80 blur-3xl" />
+      <div className="absolute -bottom-32 -right-20 h-96 w-96 rounded-full bg-[#d6e85e] opacity-25 blur-3xl" />
+      <div className="relative w-full max-w-md">
+        <div className="mb-8 flex items-end justify-between">
+          <div className="login-brand"><BrandMark /></div>
+          <div className="max-w-[150px] text-right text-[10px] font-mono uppercase tracking-[0.2em] text-[#b9c4b9]">
+            Inventory, made visible
           </div>
         </div>
 
-        <form onSubmit={handleSubmit} className="card p-6">
+        <form onSubmit={handleSubmit} className="card border-0 p-7 shadow-2xl">
           <ErrorBanner message={error} />
 
           <div className="mb-4">
@@ -71,7 +72,7 @@ export default function Login() {
           </button>
         </form>
 
-        <div className="text-center text-xs text-muted mt-4 font-mono">
+        <div className="mt-4 text-center text-xs text-[#aeb9ae] font-mono">
           No account yet? Run <code className="text-zinc-400">npm run seed</code> on the server.
         </div>
       </div>

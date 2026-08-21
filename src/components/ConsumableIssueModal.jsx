@@ -81,7 +81,7 @@ export default function ConsumableIssueModal({ consumable, onClose, onChanged })
             <form onSubmit={handleIssue} className="space-y-3 border-t border-white/10 pt-4">
               <p className="text-[10px] font-semibold uppercase tracking-widest text-muted stencil">Issue stock</p>
               <p className="text-xs text-muted">
-                Consumables aren't returned — this permanently reduces remaining stock.
+                Consumables are not returned — this permanently reduces remaining stock.
               </p>
               <div className="grid grid-cols-2 gap-3">
                 <input value={name} onChange={(e) => setName(e.target.value)} placeholder="Name" className="input" />
