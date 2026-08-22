@@ -1,18 +1,19 @@
 import { useEffect, useState, useCallback } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import client from '../api/client.js';
 import StatusChip from '../components/StatusChip.jsx';
 import { Spinner, ErrorBanner, EmptyState } from '../components/Common.jsx';
 
 const CATEGORIES = ['Laptop', 'Desktop', 'Monitor', 'Phone', 'Tablet', 'Server', 'Networking', 'Peripheral', 'Software License', 'Other'];
-const STATUSES = ['available', 'assigned', 'in_maintenance', 'retired', 'lost'];
+const STATUSES = ['available', 'assigned', 'in_maintenance', 'retired', 'lost', 'byod', 'deleted'];
 
 export default function Assets() {
+  const [searchParams] = useSearchParams();
   const [items, setItems] = useState([]);
   const [pagination, setPagination] = useState({ page: 1, pages: 1, total: 0 });
   const [search, setSearch] = useState('');
   const [category, setCategory] = useState('');
-  const [status, setStatus] = useState('');
+  const [status, setStatus] = useState(() => searchParams.get('status') || '');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
@@ -53,6 +54,10 @@ export default function Assets() {
       fetchAssets(pagination.page);
     } catch (err) { setError(err.response?.data?.message || 'Could not clone asset.'); }
   };
+
+  useEffect(() => {
+    setStatus(searchParams.get('status') || '');
+  }, [searchParams]);
 
   useEffect(() => {
     const t = setTimeout(() => fetchAssets(1), 300);

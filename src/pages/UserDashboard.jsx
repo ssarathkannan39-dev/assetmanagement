@@ -43,20 +43,21 @@ export default function UserDashboard() {
   }, [searchParams]);
 
   useEffect(() => {
-    api.get('/assignments/my-dashboard')
-      .then(({ data: response }) => { setData(response); setError(''); })
+    Promise.all([api.get('/assignments/my-dashboard'), api.get('/eulas')])
+      .then(([{ data: response }, { data: eulaResponse }]) => { response.eulas = eulaResponse.data || []; setData(response); setError(''); })
       .catch((err) => setError(err.response?.data?.message || 'Could not load your asset portal.'))
       .finally(() => setLoading(false));
   }, []);
 
   const user = data?.user;
   const setView = (nextTab) => { setTab(nextTab); setSearchParams(nextTab === 'info' ? {} : { tab: nextTab }); };
-  const currentTitle = useMemo(() => TABS.find(([key]) => key === tab)?.[1] || 'Info', [tab]);
+  const currentTitle = useMemo(() => TABS.find(([key]) => key === tab)?.[1] || (tab === 'requestable' ? 'Requestable' : tab === 'requested' ? 'Requested' : 'Info'), [tab]);
   const summary = data?.summary || {};
   const requestAsset = async (assetId) => {
     try {
       await api.post('/asset-requests', { assetId });
-      const { data: response } = await api.get('/assignments/my-dashboard');
+      const [{ data: response }, { data: eulaResponse }] = await Promise.all([api.get('/assignments/my-dashboard'), api.get('/eulas')]);
+      response.eulas = eulaResponse.data || [];
       setData(response);
       setView('requested');
     } catch (err) {
@@ -73,6 +74,6 @@ export default function UserDashboard() {
 
     <section className="user-content-card">{loading ? <div className="p-12 text-center text-sm text-muted">Loading your asset portal...</div> : error ? <div className="p-10 text-center text-sm text-red-700">{error}</div> : tab === 'info' ? <div className="user-info-grid"><div><label>Name</label><strong>{user?.name || '—'}</strong></div><div><label>Email</label><strong>{user?.email || '—'}</strong></div><div><label>Account type</label><strong>{user?.role || 'Asset user'}</strong></div><div><label>Assigned assets</label><strong>{summary.assets || 0}</strong></div><div><label>Assigned licenses</label><strong>{summary.licenses || 0}</strong></div><div><label>Available to request</label><strong>{data?.requestable?.length || 0}</strong></div></div> : tab === 'assets' ? <AssetTable items={data.assets || []} /> : tab === 'requestable' ? <AssetTable items={data.requestable || []} requestable onRequest={requestAsset} /> : tab === 'requested' ? (data.requested?.length ? <AssetTable items={data.requested} /> : <EmptyState label="requested items" detail="Your submitted asset requests will appear here." />) : tab === 'eulas' ? <EmptyState label="EULAs" detail="EULA documents linked to your assigned software will appear here." /> : <InventoryTable items={data[tab] || []} type={currentTitle} />}</section>
 
-    <section className="user-shortcuts"><Link to="/my-assets?tab=requestable"><span>＋</span><strong>Request an asset</strong><small>Browse available equipment</small></Link><Link to="/maintenance"><span>⚒</span><strong>Report an issue</strong><small>Get help with assigned equipment</small></Link><Link to="/documents"><span>▤</span><strong>View documents</strong><small>Manuals and certificates</small></Link></section>
+    <section className="user-shortcuts"><Link to="/requestable-items"><span>＋</span><strong>Request an asset</strong><small>Browse available equipment</small></Link><Link to="/maintenance"><span>⚒</span><strong>Report an issue</strong><small>Get help with assigned equipment</small></Link><Link to="/documents"><span>▤</span><strong>View documents</strong><small>Manuals and certificates</small></Link></section>
   </div>;
 }

@@ -26,7 +26,7 @@ export default function AssignmentModal({ mode, assignment, onClose, onSaved }) 
     if (mode === 'checkout') {
       // ASSUMPTION: GET /api/assets?status=Available exists on your assets API
       api
-        .get('/assets', { params: { status: 'Available' } })
+        .get('/assets', { params: { status: 'available' } })
         .then((res) => setAvailableAssets(res.data?.data || res.data || []))
         .catch(() => setAvailableAssets([]));
     }
@@ -100,7 +100,7 @@ export default function AssignmentModal({ mode, assignment, onClose, onSaved }) 
                 </select>
               </Field>
 
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                 <Field label="Assigned to">
                   <input value={form.name} onChange={handleChange('name')} className="input" required />
                 </Field>
@@ -118,7 +118,7 @@ export default function AssignmentModal({ mode, assignment, onClose, onSaved }) 
                 />
               </Field>
 
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                 <Field label="Due date">
                   <input
                     type="date"

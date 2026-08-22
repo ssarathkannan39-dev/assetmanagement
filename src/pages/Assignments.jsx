@@ -79,7 +79,7 @@ export default function Assignments() {
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           placeholder="Search by name, email, department…"
-          className="w-64 border border-white/10 bg-white/5 px-3 py-1.5 text-sm text-white placeholder:text-white/30 focus:border-amber-500/50 focus:outline-none"
+          className="w-full border border-white/10 bg-white/5 px-3 py-1.5 text-sm text-white placeholder:text-white/30 focus:border-amber-500/50 focus:outline-none sm:w-64"
         />
       </div>
 

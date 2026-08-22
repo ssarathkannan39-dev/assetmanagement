@@ -50,7 +50,7 @@ export function AuthProvider({ children }) {
   }, [bootstrap]);
 
   const login = useCallback(async (email, password) => {
-    const { data } = await client.post('/auth/login', { email, password });
+    const { data } = await client.post('/auth/login', { email: email.trim(), password });
     setAccessToken(data.accessToken);
     setUser(data.user);
     localStorage.setItem(SESSION_HINT_KEY, '1');

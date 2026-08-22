@@ -17,10 +17,10 @@ function AssignModal({ assetId, onClose, onDone }) {
     setSubmitting(true);
     setError('');
     try {
-      await client.post('/assignments', {
-        asset: assetId,
+      await client.post('/assignments/checkout', {
+        assetId,
         assignedTo: { name: form.name, email: form.email || undefined, department: form.department || undefined },
-        conditionOnAssign: form.conditionOnAssign || undefined,
+        conditionOut: form.conditionOnAssign || undefined,
       });
       onDone();
     } catch (err) {
@@ -87,7 +87,7 @@ export default function AssetDetail() {
     if (!activeAssignmentId) return;
     setActionError('');
     try {
-      await client.put(`/assignments/${activeAssignmentId}/return`, {});
+      await client.patch(`/assignments/${activeAssignmentId}/checkin`, {});
       load();
     } catch (err) {
       setActionError(err.response?.data?.message || 'Failed to return asset');

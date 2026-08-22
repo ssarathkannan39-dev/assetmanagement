@@ -19,6 +19,9 @@ import UserDashboard from './pages/UserDashboard.jsx';
 import Reports from './pages/Reports.jsx';
 import Requirements from './pages/Requirements.jsx';
 import SuperDashboard from './pages/SuperDashboard.jsx';
+import RequestableItems from './pages/RequestableItems.jsx';
+import ResourcePage from './pages/ResourcePage.jsx';
+import Import from './pages/Import.jsx';
 
 function ProtectedRoute({ children }) {
   const { user, loading } = useAuth();
@@ -34,6 +37,35 @@ function ProtectedRoute({ children }) {
   if (!user) {
     return <Navigate to="/login" replace state={{ from: location }} />;
   }
+  return children;
+}
+
+function hasMenuAccess(user, accessKey) {
+  if (!user) return false;
+  if (user.role === 'superadmin') return true;
+  return Array.isArray(user.menuAccess) ? user.menuAccess.includes(accessKey) : false;
+}
+
+function MenuAccessRoute({ children, accessKey }) {
+  const { user, loading } = useAuth();
+  const location = useLocation();
+
+  if (loading) {
+    return (
+      <div className="h-screen flex items-center justify-center bg-[var(--bg)] text-accent stencil text-sm">
+        Loading workspace...
+      </div>
+    );
+  }
+
+  if (!user) {
+    return <Navigate to="/login" replace state={{ from: location }} />;
+  }
+
+  if (!hasMenuAccess(user, accessKey)) {
+    return <Navigate to="/" replace />;
+  }
+
   return children;
 }
 
@@ -54,7 +86,6 @@ function PublicOnlyRoute({ children }) {
 function HomeRoute() {
   const { user } = useAuth();
   if (user?.role === 'asset_user') return <Navigate to="/my-assets" replace />;
-  if (user?.role === 'superadmin') return <Navigate to="/super-dashboard" replace />;
   return <Dashboard />;
 }
 
@@ -98,23 +129,27 @@ export default function App() {
         }
       >
         <Route index element={<HomeRoute />} />
-        <Route path="assets" element={<Assets />} />
-        <Route path="assets/new" element={<AssetForm />} />
-        <Route path="assets/:id/edit" element={<AssetForm />} />
-        <Route path="assets/:id" element={<AssetDetail />} />
-        <Route path="assignments" element={<Assignments />} />
-        <Route path="maintenance" element={<Maintenance />} />
-        <Route path="accessories" element={<Accessories />} />
-        <Route path="consumables" element={<Consumables />} />
-        <Route path="licenses" element={<Licenses />} />
+        <Route path="assets" element={<MenuAccessRoute accessKey="all-assets"><Assets /></MenuAccessRoute>} />
+        <Route path="assets/new" element={<MenuAccessRoute accessKey="add-asset"><AssetForm /></MenuAccessRoute>} />
+        <Route path="assets/:id/edit" element={<MenuAccessRoute accessKey="add-asset"><AssetForm /></MenuAccessRoute>} />
+        <Route path="assets/:id" element={<ProtectedRoute><AssetDetail /></ProtectedRoute>} />
+        <Route path="assignments" element={<MenuAccessRoute accessKey="assignments"><Assignments /></MenuAccessRoute>} />
+        <Route path="maintenance" element={<MenuAccessRoute accessKey="maintenance"><Maintenance /></MenuAccessRoute>} />
+        <Route path="accessories" element={<MenuAccessRoute accessKey="accessories"><Accessories /></MenuAccessRoute>} />
+        <Route path="consumables" element={<MenuAccessRoute accessKey="consumables"><Consumables /></MenuAccessRoute>} />
+        <Route path="licenses" element={<MenuAccessRoute accessKey="licenses"><Licenses /></MenuAccessRoute>} />
         <Route path="profile" element={<Profile />} />
-        <Route path="my-assets" element={<UserDashboard />} />
+        <Route path="my-assets" element={<MenuAccessRoute accessKey="my-assets"><UserDashboard /></MenuAccessRoute>} />
+        <Route path="requestable-items" element={<MenuAccessRoute accessKey="requestable-items"><RequestableItems /></MenuAccessRoute>} />
         <Route path="super-dashboard" element={<SuperOnlyRoute />} />
-        <Route path="reports" element={<Reports />} />
-        <Route path="requirements" element={<Requirements />} />
-        <Route path="audit-log" element={<AuditLog />} />
-        <Route path="documents" element={<Documents />} />
-        <Route path="scan" element={<Scan />} />
+        <Route path="reports" element={<MenuAccessRoute accessKey="reports"><Reports /></MenuAccessRoute>} />
+        <Route path="requirements" element={<MenuAccessRoute accessKey="requirements"><Requirements /></MenuAccessRoute>} />
+        <Route path="audit-log" element={<MenuAccessRoute accessKey="audit-log"><AuditLog /></MenuAccessRoute>} />
+        <Route path="documents" element={<MenuAccessRoute accessKey="documents"><Documents /></MenuAccessRoute>} />
+        <Route path="scan" element={<MenuAccessRoute accessKey="scan-asset"><Scan /></MenuAccessRoute>} />
+        <Route path="components" element={<MenuAccessRoute accessKey="components"><ResourcePage kind="components" /></MenuAccessRoute>} />
+        <Route path="kits" element={<MenuAccessRoute accessKey="kits"><ResourcePage kind="kits" /></MenuAccessRoute>} />
+        <Route path="import" element={<MenuAccessRoute accessKey="import"><Import /></MenuAccessRoute>} />
       </Route>
       <Route path="*" element={<NotFound />} />
     </Routes>

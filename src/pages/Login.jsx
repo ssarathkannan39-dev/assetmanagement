@@ -49,8 +49,9 @@ export default function Login() {
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              placeholder="admin@example.com"
+              placeholder="superadmin@gmail.com"
               required
+              autoComplete="username"
               autoFocus
             />
           </div>
@@ -62,8 +63,9 @@ export default function Login() {
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              placeholder="••••••••"
+              placeholder="super@123"
               required
+              autoComplete="current-password"
             />
           </div>
 
@@ -72,8 +74,9 @@ export default function Login() {
           </button>
         </form>
 
-        <div className="mt-4 text-center text-xs text-[#aeb9ae] font-mono">
-          No account yet? Run <code className="text-zinc-400">npm run seed</code> on the server.
+        <div className="mt-4 space-y-2 text-center text-xs text-[#aeb9ae] font-mono">
+          <div>Demo superadmin: <span className="text-zinc-200">superadmin@gmail.com / super@123</span></div>
+          <div>No account yet? Run <code className="text-zinc-400">npm run seed</code> on the server.</div>
         </div>
       </div>
     </div>

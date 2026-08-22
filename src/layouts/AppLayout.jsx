@@ -5,64 +5,105 @@ import api from '../api/client.js';
 import BrandMark from '../components/BrandMark.jsx';
 
 const MENU = [
-  { label: 'Dashboard', icon: '⌂', to: '/', end: true },
-  { label: 'Super dashboard', icon: '✦', to: '/super-dashboard' },
-  { label: 'My asset dashboard', icon: '▣', to: '/my-assets' },
-  { label: 'Requirements', icon: '✓', to: '/requirements' },
+  { key: 'dashboard', label: 'Dashboard', icon: '⌂', to: '/', end: true },
+  { key: 'super-dashboard', label: 'Super dashboard', icon: '✦', to: '/super-dashboard' },
+  { key: 'requirements', label: 'Requirements', icon: '✓', to: '/requirements' },
   {
-    label: 'Assets',
+    key: 'assets',
+    label: 'Asset Management',
     icon: '▦',
     children: [
-      { label: 'All assets', to: '/assets' },
-      { label: 'Add asset', to: '/assets/new' },
-      { label: 'Scan asset tag', to: '/scan' },
+      { key: 'all-assets', label: 'Asset Inventory', to: '/assets' },
+      { key: 'add-asset', label: 'Add Asset', to: '/assets/new' },
+      { key: 'deployed-assets', label: 'Deployed Assets', to: '/assets?status=assigned' },
+      { key: 'ready-assets', label: 'Ready to Deploy', to: '/assets?status=available' },
+      { key: 'pending-assets', label: 'Pending', to: '/assets?status=in_maintenance' },
+      { key: 'undeployable-assets', label: 'Un-deployable', to: '/assets?status=lost' },
+      { key: 'byod-assets', label: 'BYOD', to: '/assets?status=byod' },
+      { key: 'archived-assets', label: 'Archived', to: '/assets?status=retired' },
+      { key: 'requestable-assets', label: 'Requestable', to: '/requestable-items' },
+      { key: 'audit-due', label: 'Due for Audit', to: '/audit-log' },
+      { key: 'checkin-due', label: 'Due for Checkin', to: '/assignments?status=overdue' },
+      { key: 'scan-asset', label: 'Scan Asset Tag', to: '/scan' },
+      { key: 'quick-scan-checkin', label: 'Quick Scan Checkin', to: '/scan' },
+      { key: 'bulk-checkout', label: 'Bulk Checkout', to: '/assignments' },
+      { key: 'requested-assets', label: 'Requested', to: '/my-assets?tab=requested' },
+      { key: 'deleted-assets', label: 'Deleted', to: '/assets?status=deleted' },
+      { key: 'scanner-audit', label: 'Scanner Bulk Audit', to: '/audit-log' },
     ],
   },
-  { label: 'Assignments', icon: '⇄', to: '/assignments' },
-  { label: 'Maintenance', icon: '⚒', to: '/maintenance' },
+  { key: 'assignments', label: 'Assignments', icon: '⇄', to: '/assignments' },
+  { key: 'maintenance', label: 'Maintenances', icon: '⚒', to: '/maintenance' },
   {
+    key: 'inventory',
     label: 'Inventory',
     icon: '▤',
     children: [
-      { label: 'Accessories', to: '/accessories' },
-      { label: 'Consumables', to: '/consumables' },
-      { label: 'Licenses', to: '/licenses' },
-      { label: 'Documents', to: '/documents' },
-      { label: 'Components', to: '/accessories' },
-      { label: 'Predefined kits', to: '/accessories' },
+      { key: 'accessories', label: 'Accessories', to: '/accessories' },
+      { key: 'consumables', label: 'Consumables', to: '/consumables' },
+      { key: 'licenses', label: 'Licenses', to: '/licenses' },
+      { key: 'documents', label: 'Documents', to: '/documents' },
+      { key: 'components', label: 'Components', to: '/components' },
+      { key: 'kits', label: 'Predefined Kits', to: '/kits' },
     ],
   },
-  { label: 'Import', icon: '⇧', to: '/reports' },
+  { key: 'reports', label: 'Reports', icon: '▥', to: '/reports' },
   {
-    label: 'Settings',
-    icon: '⚙',
-    children: [
-      { label: 'Custom fields', to: '/profile' },
-      { label: 'Status labels', to: '/profile' },
-      { label: 'Categories', to: '/profile' },
-      { label: 'System reports', to: '/reports' },
-    ],
-  },
-  {
+    key: 'people',
     label: 'People',
     icon: '♟',
     children: [
-      { label: 'All users', to: '/profile' },
-      { label: 'My asset dashboard', to: '/my-assets' },
-      { label: 'My profile', to: '/profile' },
+      { key: 'all-users', label: 'All Users', to: '/profile' },
+      { key: 'my-profile', label: 'My Profile', to: '/profile' },
     ],
   },
-  { label: 'Audit log', icon: '≣', to: '/audit-log' },
-  { label: 'Reports', icon: '▥', to: '/reports' },
+  {
+    key: 'settings',
+    label: 'Settings',
+    icon: '⚙',
+    children: [
+      { key: 'categories', label: 'Categories', to: '/profile' },
+      { key: 'custom-fields', label: 'Custom Fields', to: '/profile' },
+      { key: 'status-labels', label: 'Status Labels', to: '/profile' },
+    ],
+  },
+  { key: 'audit-log', label: 'Audit Log', icon: '≣', to: '/audit-log' },
+  { key: 'my-assets', label: 'My Asset Dashboard', icon: '▣', to: '/my-assets' },
+  { key: 'requestable-items', label: 'Requestable Items', icon: '＋', to: '/requestable-items' },
+  { key: 'import', label: 'Import', icon: '↥', to: '/import' },
 ];
 
-const ASSET_USER_MENU = [
-  { label: 'My asset dashboard', icon: '▣', to: '/my-assets' },
-  { label: 'Requestable items', icon: '＋', to: '/my-assets?tab=requestable' },
-  { label: 'Requested items', icon: '◷', to: '/my-assets?tab=requested' },
-  { label: 'Maintenance', icon: '⚒', to: '/maintenance' },
-  { label: 'Documents', icon: '▤', to: '/documents' },
-];
+export const DEFAULT_ROLE_ACCESS = {
+  superadmin: MENU.flatMap((item) => item.children ? [item.key, ...item.children.map((child) => child.key)] : [item.key]),
+  admin: ['dashboard', 'requirements', 'assets', 'all-assets', 'deployed-assets', 'ready-assets', 'pending-assets', 'undeployable-assets', 'byod-assets', 'archived-assets', 'requestable-assets', 'audit-due', 'checkin-due', 'add-asset', 'scan-asset', 'quick-scan-checkin', 'bulk-checkout', 'requested-assets', 'deleted-assets', 'scanner-audit', 'assignments', 'maintenance', 'inventory', 'accessories', 'consumables', 'licenses', 'documents', 'components', 'kits', 'reports', 'people', 'all-users', 'my-profile', 'audit-log', 'import', 'my-assets', 'requestable-items'],
+  asset_user: ['dashboard', 'my-assets', 'requestable-items', 'maintenance', 'documents', 'profile'],
+};
+
+export const MENU_ACCESS_OPTIONS = MENU.flatMap((item) => item.children ? item.children.map((child) => ({ key: child.key, label: child.label, route: child.to })) : [{ key: item.key, label: item.label, route: item.to }]);
+
+const getMenuAccessSet = (user) => {
+  const access = Array.isArray(user?.menuAccess) && user.menuAccess.length ? user.menuAccess : DEFAULT_ROLE_ACCESS[user?.role] || [];
+  return new Set(access);
+};
+
+const getVisibleMenu = (user) => {
+  if (!user) return [];
+  if (user.role === 'superadmin') return MENU;
+
+  const allowed = getMenuAccessSet(user);
+  return MENU.filter((item) => {
+    if (item.children) {
+      const children = item.children.filter((child) => allowed.has(child.key));
+      if (!children.length) return false;
+      return true;
+    }
+    return allowed.has(item.key);
+  }).map((item) => (
+    item.children
+      ? { ...item, children: item.children.filter((child) => allowed.has(child.key)) }
+      : item
+  )).filter((item) => !item.children || item.children.length);
+};
 
 const CREATE_ITEMS = [
   ['Asset', '/assets/new'],
@@ -82,7 +123,7 @@ function MenuItem({ item, open, onToggle }) {
     <button type="button" onClick={onToggle} className={`mx-3 flex w-[calc(100%-1.5rem)] items-center gap-3 rounded-md px-3 py-2.5 text-left text-[13px] transition ${active ? 'text-white' : 'text-[#b8c5d2] hover:bg-[#1c3150] hover:text-white'}`}>
       <span className="w-5 text-center text-base text-[#93c5fd]">{item.icon}</span><span className="flex-1">{item.label}</span><span className={`text-xs transition-transform ${open ? 'rotate-180' : ''}`}>⌄</span>
     </button>
-    {open && <div className="mx-3 border-l border-[#385474] bg-[#142844] py-1 pl-9 pr-2">{item.children.map((child) => <NavLink key={`${item.label}-${child.to}`} to={child.to} className={({ isActive }) => `block py-2 text-xs transition ${isActive ? 'font-semibold text-[#bfdbfe]' : 'text-[#9eb0c2] hover:text-white'}`}>{child.label}</NavLink>)}</div>}
+    {open && <div className="mx-3 border-l border-[#385474] bg-[#142844] py-1 pl-9 pr-2">{item.children.map((child) => <NavLink key={`${item.key}-${child.key}`} to={child.to} className={({ isActive }) => `block py-2 text-xs transition ${isActive ? 'font-semibold text-[#bfdbfe]' : 'text-[#9eb0c2] hover:text-white'}`}>{child.label}</NavLink>)}</div>}
   </div>;
 }
 
@@ -97,10 +138,11 @@ export default function AppLayout() {
   const [paletteOpen, setPaletteOpen] = useState(false);
   const [assetResults, setAssetResults] = useState([]);
   const [systemOnline, setSystemOnline] = useState(true);
+  const [mobileNavOpen, setMobileNavOpen] = useState(false);
   const [darkMode, setDarkMode] = useState(() => localStorage.getItem('assetrak_theme') === 'midnight');
-  const menu = user?.role === 'asset_user' ? ASSET_USER_MENU : user?.role === 'superadmin' ? MENU : MENU.filter((item) => item.to !== '/super-dashboard');
+  const menu = getVisibleMenu(user);
   const currentLabel = useMemo(() => {
-    const entries = menu.flatMap((item) => item.children || item);
+    const entries = menu.flatMap((item) => item.children ? item.children : [item]);
     const match = entries.find((item) => item.to === location.pathname) || entries.filter((item) => item.to && item.to !== '/').find((item) => location.pathname.startsWith(`${item.to}/`));
     return match?.label || 'Dashboard';
   }, [location.pathname, menu]);
@@ -109,6 +151,10 @@ export default function AppLayout() {
     document.documentElement.dataset.theme = darkMode ? 'midnight' : 'royal';
     localStorage.setItem('assetrak_theme', darkMode ? 'midnight' : 'royal');
   }, [darkMode]);
+
+  useEffect(() => {
+    setMobileNavOpen(false);
+  }, [location.pathname]);
 
   useEffect(() => {
     const onShortcut = (event) => {
@@ -161,15 +207,16 @@ export default function AppLayout() {
   };
 
   return <div className={`app-shell flex min-h-screen ${darkMode ? 'theme-midnight' : ''}`}>
-    <aside className="sidebar-scroll fixed inset-y-0 left-0 z-30 flex w-64 flex-col overflow-y-auto bg-[#0f1f35] shadow-xl">
+    <aside className={`sidebar-scroll fixed inset-y-0 left-0 z-30 w-64 flex-col overflow-y-auto bg-[#0f1f35] shadow-xl ${mobileNavOpen ? 'flex' : 'hidden'} lg:flex`}>
       <div className="flex h-20 items-center gap-3 border-b border-[#263f5d] px-5">
         <BrandMark compact />
       </div>
       <nav className="flex-1 py-4">{menu.map((item) => <MenuItem key={item.label} item={item} open={openGroups[item.label]} onToggle={() => setOpenGroups((prev) => ({ ...prev, [item.label]: !prev[item.label] }))} />)}</nav>
       <div className="border-t border-[#263f5d] p-4"><Link to="/profile" className="flex items-center gap-3"><div className="grid h-9 w-9 place-items-center rounded-full bg-[#2563eb] font-bold text-white">{(user?.name || 'A').slice(0, 1).toUpperCase()}</div><div className="min-w-0"><div className="truncate text-sm font-semibold text-white">{user?.name}</div><div className="truncate text-xs text-[#9eb0c2]">{user?.role}</div></div></Link><button onClick={logout} className="mt-3 w-full rounded border border-[#385474] px-3 py-1.5 text-xs text-[#b8c5d2] hover:border-[#93c5fd] hover:text-white">Sign out</button></div>
     </aside>
-    <div className="ml-64 flex min-h-screen min-w-0 flex-1 flex-col">
+    <div className="ml-0 flex min-h-screen min-w-0 flex-1 flex-col lg:ml-64">
       <header className="sticky top-0 z-20 flex min-h-20 flex-wrap items-center gap-3 border-b border-line bg-[#fffdf8] px-6 py-3 text-ink shadow-sm">
+        <button type="button" onClick={() => setMobileNavOpen((value) => !value)} className="rounded border border-line px-3 py-2 text-xs text-muted lg:hidden" aria-label="Toggle navigation">Menu</button>
         <div className="mr-auto"><div className="text-[10px] font-mono uppercase tracking-[0.2em] text-muted">Workspace / current view</div><div className="text-lg font-semibold">{currentLabel}</div></div>
         <button onClick={() => setPaletteOpen(true)} className="hidden rounded border border-line px-2 py-2 text-[10px] text-muted lg:block">CTRL K</button>
         <div className="relative hidden w-64 md:block"><input value={search} onFocus={() => setPaletteOpen(true)} onChange={(e) => setSearch(e.target.value)} placeholder="Search asset tag..." className="w-full rounded-md border border-line bg-[#f3f1ec] px-3 py-2 text-xs text-ink outline-none placeholder:text-muted focus:border-accent" />{search && <button onClick={() => setSearch('')} className="absolute right-2 top-1.5 text-sm text-muted">×</button>}{search && paletteOpen && <div className="absolute left-0 top-11 z-50 w-full rounded-md border border-line bg-[#fffdf8] py-2 text-ink shadow-xl">{assetResults.length ? assetResults.map((asset) => <button type="button" onClick={() => go(`/assets/${asset._id}`)} className="block w-full px-3 py-2 text-left hover:bg-[#f3f1ec]" key={asset._id}><div className="text-xs font-semibold">{asset.name}</div><div className="text-[10px] text-muted">{asset.assetTag} · {asset.status}</div></button>) : <div className="px-3 py-2 text-xs text-muted">No matching assets</div>}</div>}</div>
