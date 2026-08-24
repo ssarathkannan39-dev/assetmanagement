@@ -21,16 +21,18 @@ export default function AccessoryCheckoutModal({ accessory, onClose, onChanged }
     }
     setError('');
     setLoading(true);
-    try {
+    try {       
       await api.post(`/accessories/${accessory._id}/checkout`, {
         name,
         email,
         department,
         quantity: Number(quantity) || 1,
       });
-      setName('');
+      setName('');  
       setEmail('');
       setDepartment('');
+
+      
       setQuantity(1);
       onChanged();
     } catch (err) {

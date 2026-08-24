@@ -6,6 +6,7 @@
   color-scheme: light;
   --bg: #f5f7fa;
   --panel: #ffffff;
+  --panel-soft: #f8fafb;
   --line: #dce5eb;
   --ink: #0f1f35;
   --muted: #63727c;
@@ -65,7 +66,7 @@ body {
 .btn-ghost {
   @apply btn text-muted hover:text-zinc-900 bg-transparent;
 }
-
+        
 .input {
   @apply w-full border border-line rounded-md px-3 py-2 text-sm text-zinc-800 placeholder:text-muted focus:outline-none focus:border-accent transition-colors;
   background: var(--panel);
@@ -79,14 +80,34 @@ body {
   background: var(--bg);
 }
 
-.sidebar-scroll {
-  scrollbar-width: thin;
-  scrollbar-color: #36505f #17262c;
+.sidebar-scroll::-webkit-scrollbar {
+  width: 10px;
+}
+
+.sidebar-scroll::-webkit-scrollbar-track {
+  background: #17262c;
+}
+
+.sidebar-scroll::-webkit-scrollbar-thumb {
+  background: #36505f;
+  border: 2px solid #17262c;
 }
 
 [data-theme='midnight'] body {
+  color-scheme: dark;
   background: #1c2423;
   color: #e8ebe1;
+}
+
+[data-theme='midnight'],
+.theme-midnight {
+  --bg: #1c2423;
+  --panel: #27312f;
+  --panel-soft: #222b29;
+  --line: #465550;
+  --ink: #f1f5f2;
+  --muted: #b7c4bd;
+  --highlight: #304d5c;
 }
 
 [data-theme='midnight'] .app-shell,
@@ -109,6 +130,39 @@ body {
 .theme-midnight .text-muted { color: #aab8af; }
 
 .theme-midnight .btn-outline { background: #27312f; color: #e8ebe1; border-color: #4a5752; }
+
+/* Fixed Tailwind color utilities are used throughout older pages. Keep them
+  readable when the shared theme changes underneath them. */
+.theme-midnight [class~="text-ink"],
+.theme-midnight [class*="text-[#172033]"],
+.theme-midnight [class~="text-zinc-50"],
+.theme-midnight [class~="text-zinc-100"],
+.theme-midnight [class~="text-zinc-200"],
+.theme-midnight [class~="text-zinc-300"],
+.theme-midnight [class~="text-zinc-600"],
+.theme-midnight [class~="text-slate-500"] { color: var(--ink); }
+.theme-midnight [class~="text-muted"] { color: var(--muted); }
+.theme-midnight .bg-panel { background: var(--panel); }
+.theme-midnight .bg-panel2 { background: var(--panel-soft); }
+.theme-midnight .bg-white\/5 { background: rgba(255, 255, 255, 0.08); }
+.theme-midnight .border-line { border-color: var(--line); }
+.theme-midnight .app-header { background: #202a28; color: var(--ink); }
+.theme-midnight .app-header input { background: #2c3835; color: var(--ink); }
+.theme-midnight .app-palette { background: #27312f; color: var(--ink); }
+
+/* Some operational screens predate the light theme and use white text on
+  their page surface. Reserve white text for genuinely dark panels/modals. */
+.app-shell:not(.theme-midnight) main [class~="text-white"],
+.app-shell:not(.theme-midnight) main [class~="text-zinc-50"],
+.app-shell:not(.theme-midnight) main [class~="text-zinc-100"],
+.app-shell:not(.theme-midnight) main [class~="text-zinc-200"] { color: var(--ink); }
+.app-shell:not(.theme-midnight) main .btn-primary[class~="text-white"] { color: #ffffff; }
+.app-shell:not(.theme-midnight) main .bg-white\/5 { background: #f8fafb; }
+.app-shell:not(.theme-midnight) main .bg-ink [class~="text-white"],
+.app-shell:not(.theme-midnight) main .bg-ink [class~="text-zinc-50"],
+.app-shell:not(.theme-midnight) main .bg-ink [class~="text-zinc-100"],
+.app-shell:not(.theme-midnight) main .bg-ink [class~="text-zinc-200"] { color: #ffffff; }
+.app-shell:not(.theme-midnight) main .border-white\/10 { border-color: var(--line); }
 
 @keyframes rise-in {
   from { opacity: 0; transform: translateY(8px); }

@@ -1,27 +1,30 @@
+import { lazy, Suspense } from 'react';
 import { Link, Navigate, Route, Routes, useLocation } from 'react-router-dom';
 import { useAuth } from './context/AuthContext.jsx';
 import AppLayout from './layouts/AppLayout.jsx';
-import Login from './pages/Login.jsx';
-import Dashboard from './pages/Dashboard.jsx';
-import Assets from './pages/Assets.jsx';
-import AssetDetail from './pages/AssetDetail.jsx';
-import AssetForm from './pages/AssetForm.jsx';
-import Assignments from './pages/Assignments.jsx';
-import Maintenance from './pages/Maintenance.jsx';
-import AuditLog from './pages/AuditLog.jsx';     
-import Scan from './pages/Scan.jsx';
-import Documents from './components/Documents.jsx';
-import Accessories from './pages/Accessories.jsx';
-import Consumables from './pages/Consumables.jsx';
-import Licenses from './pages/Licenses.jsx';
-import Profile from './pages/Profile.jsx';
-import UserDashboard from './pages/UserDashboard.jsx';
-import Reports from './pages/Reports.jsx';
-import Requirements from './pages/Requirements.jsx';
-import SuperDashboard from './pages/SuperDashboard.jsx';
-import RequestableItems from './pages/RequestableItems.jsx';
-import ResourcePage from './pages/ResourcePage.jsx';
-import Import from './pages/Import.jsx';
+
+const Login = lazy(() => import('./pages/Login.jsx'));
+const Dashboard = lazy(() => import('./pages/Dashboard.jsx'));
+const Assets = lazy(() => import('./pages/Assets.jsx'));
+const AssetDetail = lazy(() => import('./pages/AssetDetail.jsx'));
+const AssetForm = lazy(() => import('./pages/AssetForm.jsx'));
+const Assignments = lazy(() => import('./pages/Assignments.jsx'));
+const Maintenance = lazy(() => import('./pages/Maintenance.jsx'));
+const AuditLog = lazy(() => import('./pages/AuditLog.jsx'));
+const Scan = lazy(() => import('./pages/Scan.jsx'));
+const Documents = lazy(() => import('./components/Documents.jsx'));
+const Accessories = lazy(() => import('./pages/Accessories.jsx'));
+const Consumables = lazy(() => import('./pages/Consumables.jsx'));
+const Licenses = lazy(() => import('./pages/Licenses.jsx'));
+const Profile = lazy(() => import('./pages/Profile.jsx'));
+const UserDashboard = lazy(() => import('./pages/UserDashboard.jsx'));
+const Users = lazy(() => import('./pages/Users.jsx'));
+const Reports = lazy(() => import('./pages/Reports.jsx'));
+const Requirements = lazy(() => import('./pages/Requirements.jsx'));
+const SuperDashboard = lazy(() => import('./pages/SuperDashboard.jsx'));
+const RequestableItems = lazy(() => import('./pages/RequestableItems.jsx'));
+const ResourcePage = lazy(() => import('./pages/ResourcePage.jsx'));
+const Import = lazy(() => import('./pages/Import.jsx'));
 
 function ProtectedRoute({ children }) {
   const { user, loading } = useAuth();
@@ -111,7 +114,8 @@ function NotFound() {
 
 export default function App() {
   return (
-    <Routes>
+    <Suspense fallback={<div className="flex min-h-screen items-center justify-center bg-[var(--bg)] text-sm text-accent">Loading workspace...</div>}>
+      <Routes>
       <Route
         path="/login"
         element={
@@ -139,6 +143,7 @@ export default function App() {
         <Route path="consumables" element={<MenuAccessRoute accessKey="consumables"><Consumables /></MenuAccessRoute>} />
         <Route path="licenses" element={<MenuAccessRoute accessKey="licenses"><Licenses /></MenuAccessRoute>} />
         <Route path="profile" element={<Profile />} />
+        <Route path="users" element={<MenuAccessRoute accessKey="all-users"><Users /></MenuAccessRoute>} />
         <Route path="my-assets" element={<MenuAccessRoute accessKey="my-assets"><UserDashboard /></MenuAccessRoute>} />
         <Route path="requestable-items" element={<MenuAccessRoute accessKey="requestable-items"><RequestableItems /></MenuAccessRoute>} />
         <Route path="super-dashboard" element={<SuperOnlyRoute />} />
@@ -152,6 +157,7 @@ export default function App() {
         <Route path="import" element={<MenuAccessRoute accessKey="import"><Import /></MenuAccessRoute>} />
       </Route>
       <Route path="*" element={<NotFound />} />
-    </Routes>
+      </Routes>
+    </Suspense>
   );
 }

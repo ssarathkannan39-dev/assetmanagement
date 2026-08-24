@@ -13,10 +13,10 @@ export default function ConsumableIssueModal({ consumable, onClose, onChanged })
   const remaining = consumable.qtyRemaining ?? consumable.totalQty - issues.reduce((s, i) => s + i.quantity, 0);
 
   const handleIssue = async (e) => {
-    e.preventDefault();
+    e.preventDefault();   
     if (!name) {
       setError('Enter who this is being issued to.');
-      return;
+      return;  
     }
     setError('');
     setLoading(true);

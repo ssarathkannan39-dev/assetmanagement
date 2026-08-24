@@ -14,7 +14,7 @@ export default function SuperDashboard() {
   const [users, setUsers] = useState([]);
   const [summary, setSummary] = useState(null);
   const [form, setForm] = useState(emptyForm);
-  const [editing, setEditing] = useState(null);
+  const [editing, setEditing] = useState(null);  
   const [showForm, setShowForm] = useState(false);
   const [search, setSearch] = useState('');
   const [loading, setLoading] = useState(true);
