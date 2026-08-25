@@ -103,7 +103,7 @@ export default function Maintenance() {
       {error && <p className="text-xs text-red-400">{error}</p>}
 
       <div className="overflow-x-auto border border-white/10">
-        <table className="w-full text-left text-sm">
+        <table className="min-w-[760px] w-full text-left text-sm">
           <thead>
             <tr className="border-b border-white/10 bg-white/5 text-[10px] uppercase tracking-widest text-muted stencil">
               <th className="px-4 py-3">Asset</th>

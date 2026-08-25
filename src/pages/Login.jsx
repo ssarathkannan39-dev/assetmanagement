@@ -10,6 +10,7 @@ export default function Login() {
   const location = useLocation();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
   const [submitting, setSubmitting] = useState(false);
 
@@ -28,55 +29,91 @@ export default function Login() {
   };
 
   return (
-    <div className="relative flex min-h-screen items-center justify-center overflow-hidden bg-ink px-4 py-10">
-      <div className="absolute -left-24 -top-24 h-80 w-80 rounded-full bg-accent opacity-80 blur-3xl" />
-      <div className="absolute -bottom-32 -right-20 h-96 w-96 rounded-full bg-[#d6e85e] opacity-25 blur-3xl" />
-      <div className="relative w-full max-w-md">
-        <div className="mb-8 flex items-end justify-between">
-          <div className="login-brand"><BrandMark /></div>
-          <div className="max-w-[150px] text-right text-[10px] font-mono uppercase tracking-[0.2em] text-[#b9c4b9]">
-            Inventory, made visible
+    <div className="login-shell">
+      <div className="login-panel">
+        <div className="login-hero">
+          <div className="brand-banner">
+            <div className="brand-banner-inner">
+              <BrandMark />
+              <span className="brand-banner-tag">Inventory, made visible</span>
+            </div>
+          </div>
+
+          <div className="space-y-4">
+            <p className="login-eyebrow">Operational visibility</p>
+            <h1 className="login-title">Track every asset with total clarity.</h1>
+            <p className="login-copy">
+              Manage inventory, maintenance, and movement across every site from one secure control center.
+            </p>
+          </div>
+
+          <div className="login-metrics">
+            <div>
+              <strong>4.2K</strong>
+              <span>Assets monitored</span>
+            </div>
+            <div>
+              <strong>98.6%</strong>
+              <span>Uptime score</span>
+            </div>
           </div>
         </div>
 
-        <form onSubmit={handleSubmit} className="card border-0 p-7 shadow-2xl">
-          <ErrorBanner message={error} />
-
-          <div className="mb-4">
-            <label className="label">Email</label>
-            <input
-              className="input"
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="superadmin@gmail.com"
-              required
-              autoComplete="username"
-              autoFocus
-            />
+        <div className="login-form-panel">
+          <div className="login-form-header">
+            <p className="login-eyebrow text-[#1d4ed8]">Welcome back</p>
+            <h2>Sign in</h2>
           </div>
 
-          <div className="mb-6">
-            <label className="label">Password</label>
-            <input
-              className="input"
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder="super@123"
-              required
-              autoComplete="current-password"
-            />
+          <form onSubmit={handleSubmit} className="login-form">
+            <ErrorBanner message={error} />
+
+            <div className="field-group">
+              <label className="label">Email</label>
+              <input
+                className="input"
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="superadmin@gmail.com"
+                required
+                autoComplete="username"
+                autoFocus
+              />
+            </div>
+
+            <div className="field-group">
+              <label className="label">Password</label>
+              <div className="password-wrap">
+                <input
+                  className="input"
+                  type={showPassword ? 'text' : 'password'}
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="super@123"
+                  required
+                  autoComplete="current-password"
+                />
+                <button
+                  type="button"
+                  className="password-toggle"
+                  onClick={() => setShowPassword((value) => !value)}
+                  aria-label={showPassword ? 'Hide password' : 'Show password'}
+                >
+                  {showPassword ? 'Hide' : 'Show'}
+                </button>
+              </div>
+            </div>
+
+            <button type="submit" className="btn-primary w-full" disabled={submitting}>
+              {submitting ? 'Signing In…' : 'Sign In'}
+            </button>
+          </form>
+
+          <div className="login-footer">
+            <div>Demo superadmin: <span>superadmin@gmail.com / super@123</span></div>
+            <div>No account yet? Run <code>npm run seed</code> on the server.</div>
           </div>
-
-          <button type="submit" className="btn-primary w-full" disabled={submitting}>
-            {submitting ? 'Signing In…' : 'Sign In'}
-          </button>
-        </form>
-
-        <div className="mt-4 space-y-2 text-center text-xs text-[#aeb9ae] font-mono">
-          <div>Demo superadmin: <span className="text-zinc-200">superadmin@gmail.com / super@123</span></div>
-          <div>No account yet? Run <code className="text-zinc-400">npm run seed</code> on the server.</div>
         </div>
       </div>
     </div>

@@ -132,7 +132,7 @@ export default function AssetDetail() {
         <div className="lg:col-span-2 space-y-6">
           <div className="card p-6">
             <div className="text-[11px] font-mono uppercase tracking-wider text-muted mb-4">Details</div>
-            <dl className="grid grid-cols-2 gap-y-4 gap-x-4 text-sm">
+            <dl className="grid grid-cols-1 gap-x-4 gap-y-4 text-sm sm:grid-cols-2">
               <div><dt className="text-muted text-xs mb-0.5">Category</dt><dd className="text-zinc-100">{asset.category}</dd></div>
               <div><dt className="text-muted text-xs mb-0.5">Location</dt><dd className="text-zinc-100">{asset.location || '—'}</dd></div>
               <div><dt className="text-muted text-xs mb-0.5">Brand / Model</dt><dd className="text-zinc-100">{[asset.brand, asset.model].filter(Boolean).join(' / ') || '—'}</dd></div>

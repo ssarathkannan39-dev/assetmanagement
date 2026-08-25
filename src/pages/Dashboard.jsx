@@ -22,6 +22,15 @@ const statusColors = {
 
 const formatNumber = (value) => new Intl.NumberFormat().format(value || 0);
 
+const getGreeting = (date = new Date()) => {
+  const hour = date.getHours();
+
+  if (hour < 12) return 'Good morning';
+  if (hour < 18) return 'Good afternoon';
+  if (hour < 22) return 'Good evening';
+  return 'Good night';
+};
+
 function Metric({ label, value, detail, tone = 'blue', to }) {
   const content = <><div className="flex items-start justify-between gap-3"><span className="text-sm font-medium text-muted">{label}</span><span className={`metric-dot metric-dot-${tone}`} /></div><div className="mt-4 text-3xl font-semibold tracking-tight text-ink">{formatNumber(value)}</div><div className="mt-2 text-xs text-muted">{detail}</div></>;
   return to ? <Link to={to} className="dashboard-card block transition hover:-translate-y-0.5 hover:border-[#aebdca]">{content}</Link> : <div className="dashboard-card">{content}</div>;
@@ -62,10 +71,11 @@ export default function Dashboard() {
   const statuses = useMemo(() => Object.entries(summary?.byStatus || {}).map(([key, value]) => ({ key, label: statusLabels[key] || key, value, fill: statusColors[key] || '#64748b' })), [summary]);
   const categories = useMemo(() => Object.entries(summary?.byCategory || {}).slice(0, 7).map(([name, value]) => ({ name, value })), [summary]);
   const attentionCount = (summary?.overdueAssignments || 0) + (summary?.maintenanceDue || 0);
+  const greeting = getGreeting();
   const lastUpdated = new Intl.DateTimeFormat(undefined, { hour: 'numeric', minute: '2-digit' }).format(new Date());
 
   return <div className="space-y-6">
-    <section className="dashboard-intro"><div><div className="dashboard-eyebrow">Operations / overview</div><h1 className="mt-2 text-3xl font-semibold tracking-tight text-ink sm:text-4xl">Good morning, {user?.name || 'Administrator'}.</h1><p className="mt-2 max-w-xl text-sm leading-6 text-muted">A clear view of your equipment estate, the work that needs attention, and the latest changes across your organization.</p></div><div className="flex flex-wrap gap-2"><button type="button" onClick={load} className="btn-outline text-xs">↻ Refresh</button><Link to="/assets/new" className="btn-primary text-xs">Add an asset</Link></div></section>
+    <section className="dashboard-intro"><div><div className="dashboard-eyebrow">Operations / overview</div><h1 className="mt-2 text-3xl font-semibold tracking-tight text-ink sm:text-4xl">{greeting}, {user?.name || 'Administrator'}.</h1><p className="mt-2 max-w-xl text-sm leading-6 text-muted">A clear view of your equipment estate, the work that needs attention, and the latest changes across your organization.</p></div><div className="flex flex-wrap gap-2"><button type="button" onClick={load} className="btn-outline text-xs">↻ Refresh</button><Link to="/assets/new" className="btn-primary text-xs">Add an asset</Link></div></section>
 
     {error && <div className="rounded-md border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">{error}</div>}
 

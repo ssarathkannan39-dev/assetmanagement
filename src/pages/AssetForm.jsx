@@ -98,7 +98,7 @@ export default function AssetForm() {
       <form onSubmit={handleSubmit} className="card p-6 space-y-5">
         <ErrorBanner message={error} />
 
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <div className="col-span-2">
             <label className="label">Name *</label>
             <input className="input" value={form.name} onChange={update('name')} placeholder="MacBook Pro 14&quot;" required />

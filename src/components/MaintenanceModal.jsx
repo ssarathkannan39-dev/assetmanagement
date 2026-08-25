@@ -85,7 +85,7 @@ export default function MaintenanceModal({ mode, record, onClose, onSaved }) {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4">
-      <div className="w-full max-w-lg border border-white/10 bg-ink shadow-2xl">
+      <div className="max-h-[calc(100dvh-2rem)] w-full max-w-lg overflow-y-auto border border-white/10 bg-ink shadow-2xl">
         <div className="flex items-center justify-between border-b border-white/10 px-5 py-4">
           <h2 className="stencil text-sm font-semibold uppercase tracking-widest text-white">
             {mode === 'create' ? 'New Maintenance Record' : `Update — ${record?.asset?.assetTag || ''}`}
@@ -109,7 +109,7 @@ export default function MaintenanceModal({ mode, record, onClose, onSaved }) {
             </Field>
           )}
 
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
             <Field label="Type">
               <select value={form.type} onChange={handleChange('type')} className="input">
                 {TYPES.map((t) => (
@@ -143,7 +143,7 @@ export default function MaintenanceModal({ mode, record, onClose, onSaved }) {
             />
           </Field>
 
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
             <Field label="Vendor / Team">
               <input value={form.vendor} onChange={handleChange('vendor')} className="input" />
             </Field>
@@ -159,7 +159,7 @@ export default function MaintenanceModal({ mode, record, onClose, onSaved }) {
             </Field>
           </div>
 
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
             {mode === 'create' && (
               <Field label="Start date">
                 <input type="date" value={form.startDate} onChange={handleChange('startDate')} className="input" />

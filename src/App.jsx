@@ -25,6 +25,7 @@ const SuperDashboard = lazy(() => import('./pages/SuperDashboard.jsx'));
 const RequestableItems = lazy(() => import('./pages/RequestableItems.jsx'));
 const ResourcePage = lazy(() => import('./pages/ResourcePage.jsx'));
 const Import = lazy(() => import('./pages/Import.jsx'));
+const Calendar = lazy(() => import('./pages/Calendar.jsx'));
 
 function ProtectedRoute({ children }) {
   const { user, loading } = useAuth();
@@ -155,6 +156,7 @@ export default function App() {
         <Route path="components" element={<MenuAccessRoute accessKey="components"><ResourcePage kind="components" /></MenuAccessRoute>} />
         <Route path="kits" element={<MenuAccessRoute accessKey="kits"><ResourcePage kind="kits" /></MenuAccessRoute>} />
         <Route path="import" element={<MenuAccessRoute accessKey="import"><Import /></MenuAccessRoute>} />
+        <Route path="calendar" element={<MenuAccessRoute accessKey="calendar"><Calendar /></MenuAccessRoute>} />
       </Route>
       <Route path="*" element={<NotFound />} />
       </Routes>

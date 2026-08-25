@@ -37,15 +37,15 @@ export default function ConsumableIssueModal({ consumable, onClose, onChanged })
     } finally {
       setLoading(false);
     }
-  };
+  };     
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4">
-      <div className="w-full max-w-xl border border-white/10 bg-ink shadow-2xl">
+      <div className="max-h-[calc(100dvh-2rem)] w-full max-w-xl overflow-y-auto border border-white/10 bg-ink shadow-2xl">
         <div className="flex items-center justify-between border-b border-white/10 px-5 py-4">
           <div>
             <h2 className="stencil text-sm font-semibold uppercase tracking-widest text-white">
-              {consumable.name} — Issue Log
+              {consumable.name} — Issue Log 
             </h2>
             <p className="text-[10px] uppercase tracking-widest text-muted">
               {remaining} remaining of {consumable.totalQty}
@@ -83,16 +83,16 @@ export default function ConsumableIssueModal({ consumable, onClose, onChanged })
               <p className="text-xs text-muted">
                 Consumables are not returned — this permanently reduces remaining stock.
               </p>
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                 <input value={name} onChange={(e) => setName(e.target.value)} placeholder="Name" className="input" />
                 <input
                   value={department}
                   onChange={(e) => setDepartment(e.target.value)}
                   placeholder="Department"
-                  className="input"
+                  className="input"    
                 />
               </div>
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                 <input value={email} onChange={(e) => setEmail(e.target.value)} placeholder="Email (optional)" className="input" />
                 <input
                   type="number"

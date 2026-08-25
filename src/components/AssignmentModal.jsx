@@ -68,7 +68,7 @@ export default function AssignmentModal({ mode, assignment, onClose, onSaved }) 
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4">
-      <div className="w-full max-w-lg border border-white/10 bg-ink shadow-2xl">
+      <div className="max-h-[calc(100dvh-2rem)] w-full max-w-lg overflow-y-auto border border-white/10 bg-ink shadow-2xl">
         <div className="flex items-center justify-between border-b border-white/10 px-5 py-4">
           <h2 className="stencil text-sm font-semibold uppercase tracking-widest text-white">
             {mode === 'checkout' ? 'New Checkout' : `Check In — ${assignment?.asset?.assetTag || ''}`}

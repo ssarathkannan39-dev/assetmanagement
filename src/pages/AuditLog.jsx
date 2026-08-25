@@ -60,8 +60,8 @@ export default function AuditLog() {
         <EmptyState title="No activity yet" subtitle="System actions will appear here as they happen." />
       ) : (
         <>
-          <div className="card overflow-hidden">
-            <table className="w-full text-sm">
+          <div className="card overflow-x-auto">
+            <table className="min-w-[640px] w-full text-sm">
               <thead>
                 <tr className="border-b border-line text-[11px] font-mono uppercase tracking-wider text-muted">
                   <th className="text-left px-4 py-3">Timestamp</th>

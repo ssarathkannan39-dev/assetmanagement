@@ -58,7 +58,7 @@ export default function LicenseModal({ license, onClose, onSaved }) {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4">
-      <div className="w-full max-w-lg border border-white/10 bg-ink shadow-2xl">
+      <div className="max-h-[calc(100dvh-2rem)] w-full max-w-lg overflow-y-auto border border-white/10 bg-ink shadow-2xl">
         <div className="flex items-center justify-between border-b border-white/10 px-5 py-4">
           <h2 className="stencil text-sm font-semibold uppercase tracking-widest text-white">
             {isEdit ? 'Edit License' : 'New License'}
@@ -73,7 +73,7 @@ export default function LicenseModal({ license, onClose, onSaved }) {
             <input value={form.name} onChange={handleChange('name')} className="input" required />
           </Field>
 
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
             <Field label="Vendor">
               <input value={form.vendor} onChange={handleChange('vendor')} className="input" />
             </Field>
@@ -86,7 +86,7 @@ export default function LicenseModal({ license, onClose, onSaved }) {
             <input value={form.licenseKey} onChange={handleChange('licenseKey')} className="input" />
           </Field>
 
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
             <Field label="Total seats">
               <input
                 type="number"
@@ -109,7 +109,7 @@ export default function LicenseModal({ license, onClose, onSaved }) {
             </Field>
           </div>
 
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
             <Field label="Purchase date">
               <input type="date" value={form.purchaseDate} onChange={handleChange('purchaseDate')} className="input" />
             </Field>

@@ -106,8 +106,8 @@ export default function Assets() {
           action={<Link to="/assets/new" className="btn-primary">+ New Asset</Link>}
         />
       ) : (
-        <div className="card overflow-hidden">
-          <table className="w-full text-sm">
+        <div className="card overflow-x-auto">
+          <table className="min-w-[820px] w-full text-sm">
             <thead>
               <tr className="border-b border-line text-[11px] font-mono uppercase tracking-wider text-muted">
                 <th className="text-left px-4 py-3">Tag</th>
