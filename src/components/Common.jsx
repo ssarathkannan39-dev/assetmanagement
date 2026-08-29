@@ -1,10 +1,10 @@
 export function StatCard({ label, value, sub, accent = false }) {
   return (
     <div className="card p-5 relative overflow-hidden">
-      <div className="text-[11px] font-mono uppercase tracking-wider text-muted mb-2">{label}</div>
-      <div className={`stencil text-3xl font-bold ${accent ? 'text-accent' : 'text-zinc-50'}`}>{value}</div>
-      {sub && <div className="text-xs text-muted mt-1">{sub}</div>}
-      <div className="absolute top-0 right-0 w-16 h-16 border-l border-b border-line opacity-30" />
+      <div className="mb-2 text-[11px] font-mono uppercase tracking-[0.18em] text-slate-500">{label}</div>
+      <div className={`stencil text-3xl font-bold ${accent ? 'text-[#0f6cbd]' : 'text-slate-900'}`}>{value}</div>
+      {sub && <div className="mt-1 text-xs text-slate-500">{sub}</div>}
+      <div className="absolute right-0 top-0 h-16 w-16 border-b border-l border-slate-200 opacity-60" />
     </div>
   );
 }
@@ -12,19 +12,17 @@ export function StatCard({ label, value, sub, accent = false }) {
 export function EmptyState({ title, subtitle, action }) {
   return (
     <div className="card p-12 text-center">
-      <div className="stencil text-lg text-zinc-300 mb-1">{title}</div>
-      {subtitle && <div className="text-sm text-muted mb-4">{subtitle}</div>}
+      <div className="stencil mb-1 text-lg text-slate-500">{title}</div>
+      {subtitle && <div className="mb-4 text-sm text-slate-500">{subtitle}</div>}
       {action}
     </div>
   );
-
-  
 }
 
 export function Spinner({ label = 'LOADING' }) {
   return (
-    <div className="flex items-center gap-3 text-muted text-xs font-mono uppercase tracking-wider py-8 justify-center">
-      <span className="w-2 h-2 bg-accent animate-pulse rounded-full" />
+    <div className="flex items-center justify-center gap-3 py-8 text-xs font-mono uppercase tracking-[0.18em] text-slate-500">
+      <span className="h-2.5 w-2.5 animate-pulse rounded-full bg-[#0f6cbd]" />
       {label}
     </div>
   );
@@ -33,7 +31,7 @@ export function Spinner({ label = 'LOADING' }) {
 export function ErrorBanner({ message }) {
   if (!message) return null;
   return (
-    <div className="border border-red-500/40 bg-red-500/10 text-red-300 text-sm rounded-sm px-4 py-3 mb-4 font-mono">
+    <div className="mb-4 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
       {message}
     </div>
   );

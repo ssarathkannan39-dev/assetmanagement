@@ -3,6 +3,7 @@ import api from '../api/client.js';
 
 const TYPES = ['Repair', 'Scheduled Service', 'Inspection', 'Upgrade', 'Other'];
 const STATUSES = ['Open', 'Scheduled', 'In Progress', 'Completed', 'Cancelled'];
+const PRIORITIES = ['Low', 'Medium', 'High', 'Critical'];
 
 /**
  * Two modes:
@@ -17,9 +18,13 @@ export default function MaintenanceModal({ mode, record, onClose, onSaved }) {
   const [form, setForm] = useState({
     assetId: record?.asset?._id || '',
     type: record?.type || 'Repair',
+    priority: record?.priority || 'Medium',
     title: record?.title || '',
     description: record?.description || '',
     vendor: record?.vendor || '',
+    assignee: record?.assignee || '',
+    team: record?.team || '',
+    recurring: Boolean(record?.recurring),
     cost: record?.cost ?? '',
     startDate: record?.startDate ? record.startDate.slice(0, 10) : '',
     dueDate: record?.dueDate ? record.dueDate.slice(0, 10) : '',
@@ -55,21 +60,31 @@ export default function MaintenanceModal({ mode, record, onClose, onSaved }) {
         await api.post('/maintenance', {
           assetId: form.assetId,
           type: form.type,
+          priority: form.priority,
           title: form.title,
           description: form.description,
           vendor: form.vendor,
+          assignee: form.assignee,
+          team: form.team,
+          recurring: form.recurring,
           cost: form.cost === '' ? undefined : Number(form.cost),
           startDate: form.startDate || undefined,
           dueDate: form.dueDate || undefined,
           status: form.status,
+          notes: form.notes,
         });
       } else {
         await api.patch(`/maintenance/${record._id}`, {
           type: form.type,
+          priority: form.priority,
           title: form.title,
           description: form.description,
           vendor: form.vendor,
+          assignee: form.assignee,
+          team: form.team,
+          recurring: form.recurring,
           cost: form.cost === '' ? undefined : Number(form.cost),
+          startDate: form.startDate || undefined,
           dueDate: form.dueDate || undefined,
           status: form.status,
           notes: form.notes,
@@ -119,6 +134,18 @@ export default function MaintenanceModal({ mode, record, onClose, onSaved }) {
                 ))}
               </select>
             </Field>
+            <Field label="Priority">
+              <select value={form.priority} onChange={handleChange('priority')} className="input">
+                {PRIORITIES.map((p) => (
+                  <option key={p} value={p}>
+                    {p}
+                  </option>
+                ))}
+              </select>
+            </Field>
+          </div>
+
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
             <Field label="Status">
               <select value={form.status} onChange={handleChange('status')} className="input">
                 {STATUSES.map((s) => (
@@ -127,6 +154,17 @@ export default function MaintenanceModal({ mode, record, onClose, onSaved }) {
                   </option>
                 ))}
               </select>
+            </Field>
+            <Field label="Recurring service">
+              <label className="flex h-[42px] items-center gap-2 rounded border border-white/10 bg-white/5 px-3 text-sm text-white">
+                <input
+                  type="checkbox"
+                  checked={form.recurring}
+                  onChange={(e) => setForm((f) => ({ ...f, recurring: e.target.checked }))}
+                  className="h-4 w-4 accent-amber-500"
+                />
+                <span>Repeat schedule</span>
+              </label>
             </Field>
           </div>
 
@@ -145,7 +183,16 @@ export default function MaintenanceModal({ mode, record, onClose, onSaved }) {
 
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
             <Field label="Vendor / Team">
-              <input value={form.vendor} onChange={handleChange('vendor')} className="input" />
+              <input value={form.vendor} onChange={handleChange('vendor')} className="input" placeholder="Internal IT, Vendor, etc." />
+            </Field>
+            <Field label="Assignee">
+              <input value={form.assignee} onChange={handleChange('assignee')} className="input" placeholder="Who owns this task?" />
+            </Field>
+          </div>
+
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+            <Field label="Team / Department">
+              <input value={form.team} onChange={handleChange('team')} className="input" placeholder="Facilities, Ops, IT" />
             </Field>
             <Field label="Cost">
               <input
@@ -160,11 +207,9 @@ export default function MaintenanceModal({ mode, record, onClose, onSaved }) {
           </div>
 
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-            {mode === 'create' && (
-              <Field label="Start date">
-                <input type="date" value={form.startDate} onChange={handleChange('startDate')} className="input" />
-              </Field>
-            )}
+            <Field label="Start date">
+              <input type="date" value={form.startDate} onChange={handleChange('startDate')} className="input" />
+            </Field>
             <Field label="Due date">
               <input type="date" value={form.dueDate} onChange={handleChange('dueDate')} className="input" />
             </Field>

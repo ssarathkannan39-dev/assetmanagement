@@ -103,7 +103,7 @@ export default function LicenseModal({ license, onClose, onSaved }) {
                 min="0"
                 step="0.01"
                 value={form.cost}
-                onChange={handleChange('cost')}
+                onChange={handleChange('cost')}    
                 className="input"
               />
             </Field>

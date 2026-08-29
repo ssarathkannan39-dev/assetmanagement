@@ -7,24 +7,35 @@ const TABS = [
   { key: 'all', label: 'All' },
   { key: 'Open', label: 'Open' },
   { key: 'Scheduled', label: 'Scheduled' },
+  { key: 'In Progress', label: 'In Progress' },
   { key: 'overdue', label: 'Overdue' },
   { key: 'Completed', label: 'Completed' },
 ];
 
+const TYPE_OPTIONS = ['all', 'Repair', 'Scheduled Service', 'Inspection', 'Upgrade', 'Other'];
+const PRIORITY_OPTIONS = ['all', 'Low', 'Medium', 'High', 'Critical'];
+
 export default function Maintenance() {
   const [tab, setTab] = useState('all');
+  const [typeFilter, setTypeFilter] = useState('all');
+  const [priorityFilter, setPriorityFilter] = useState('all');
   const [search, setSearch] = useState('');
   const [rows, setRows] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
-  const [modal, setModal] = useState(null); // { mode: 'create' | 'edit', record? }
+  const [modal, setModal] = useState(null);
 
   const load = useCallback(async () => {
     setLoading(true);
     setError('');
     try {
       const res = await api.get('/maintenance', {
-        params: { status: tab, search: search || undefined },
+        params: {
+          status: tab,
+          type: typeFilter,
+          priority: priorityFilter,
+          search: search || undefined,
+        },
       });
       setRows(res.data?.data || res.data || []);
     } catch (err) {
@@ -32,7 +43,7 @@ export default function Maintenance() {
     } finally {
       setLoading(false);
     }
-  }, [tab, search]);
+  }, [tab, typeFilter, priorityFilter, search]);
 
   useEffect(() => {
     load();
@@ -76,28 +87,77 @@ export default function Maintenance() {
         </button>
       </div>
 
-      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-white/10 pb-3">
-        <div className="flex flex-wrap gap-1">
-          {TABS.map((t) => (
-            <button
-              key={t.key}
-              onClick={() => setTab(t.key)}
-              className={`px-3 py-1.5 text-[11px] font-semibold uppercase tracking-widest stencil ${
-                tab === t.key
-                  ? 'border border-amber-500/50 bg-amber-500/10 text-amber-400'
-                  : 'text-muted hover:text-white'
-              }`}
-            >
-              {t.label}
-            </button>
-          ))}
+      <div className="space-y-3 border-b border-white/10 pb-3">
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <div className="flex flex-wrap gap-1">
+            {TABS.map((t) => (
+              <button
+                key={t.key}
+                onClick={() => setTab(t.key)}
+                className={`px-3 py-1.5 text-[11px] font-semibold uppercase tracking-widest stencil ${
+                  tab === t.key
+                    ? 'border border-amber-500/50 bg-amber-500/10 text-amber-400'
+                    : 'text-muted hover:text-white'
+                }`}
+              >
+                {t.label}
+              </button>
+            ))}
+          </div>
+          <input
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            placeholder="Search by title, assignee, vendor…"
+            className="w-64 border border-white/10 bg-white/5 px-3 py-1.5 text-sm text-white placeholder:text-white/30 focus:border-amber-500/50 focus:outline-none"
+          />
         </div>
-        <input
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          placeholder="Search by title or vendor…"
-          className="w-64 border border-white/10 bg-white/5 px-3 py-1.5 text-sm text-white placeholder:text-white/30 focus:border-amber-500/50 focus:outline-none"
-        />
+
+        <div className="grid gap-3 md:grid-cols-3">
+          <label className="block text-[10px] font-semibold uppercase tracking-widest text-muted stencil">
+            Type
+            <select
+              value={typeFilter}
+              onChange={(e) => setTypeFilter(e.target.value)}
+              className="mt-1 w-full border border-white/10 bg-white/5 px-3 py-2 text-sm text-white focus:border-amber-500/50 focus:outline-none"
+            >
+              {TYPE_OPTIONS.map((option) => (
+                <option key={option} value={option} className="bg-slate-900 text-white">
+                  {option === 'all' ? 'All types' : option}
+                </option>
+              ))}
+            </select>
+          </label>
+
+          <label className="block text-[10px] font-semibold uppercase tracking-widest text-muted stencil">
+            Priority
+            <select
+              value={priorityFilter}
+              onChange={(e) => setPriorityFilter(e.target.value)}
+              className="mt-1 w-full border border-white/10 bg-white/5 px-3 py-2 text-sm text-white focus:border-amber-500/50 focus:outline-none"
+            >
+              {PRIORITY_OPTIONS.map((option) => (
+                <option key={option} value={option} className="bg-slate-900 text-white">
+                  {option === 'all' ? 'All priorities' : option}
+                </option>
+              ))}
+            </select>
+          </label>
+
+          <div className="flex items-end">
+            <button
+              type="button"
+              onClick={() => {
+                setTab('all');
+                setTypeFilter('all');
+                setPriorityFilter('all');
+                setSearch('');
+              }}
+              className="w-full border border-white/10 bg-white/5 px-3 py-2 text-[10px] font-semibold uppercase tracking-widest text-muted hover:text-white"
+            >
+              Reset filters
+            </button>
+          </div>
+        </div>
       </div>
 
       {error && <p className="text-xs text-red-400">{error}</p>}
@@ -136,7 +196,10 @@ export default function Maintenance() {
                     <div className="font-medium">{row.asset?.name || '—'}</div>
                     <div className="text-xs text-muted">{row.asset?.assetTag}</div>
                   </td>
-                  <td className="px-4 py-3 text-white">{row.title}</td>
+                  <td className="px-4 py-3 text-white">
+                    <div className="font-medium">{row.title}</div>
+                    <div className="text-xs text-muted">{row.priority || 'Medium'} • {row.assignee || 'Unassigned'}</div>
+                  </td>
                   <td className="px-4 py-3 text-muted">{row.type}</td>
                   <td className="px-4 py-3 text-muted">{row.vendor || '—'}</td>
                   <td className="px-4 py-3 text-muted">

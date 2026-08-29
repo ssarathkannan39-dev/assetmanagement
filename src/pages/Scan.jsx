@@ -1,10 +1,11 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Html5Qrcode } from 'html5-qrcode';
 import client from '../api/client.js';
 import { ErrorBanner } from '../components/Common.jsx';
 
 const SCANNER_ID = 'qr-scanner-region';
+const RECENT_SCAN_KEY = 'asset-scan-history';
 
 export default function Scan() {
   const navigate = useNavigate();
@@ -13,22 +14,58 @@ export default function Scan() {
   const [error, setError] = useState('');
   const [manualTag, setManualTag] = useState('');
   const [lookingUp, setLookingUp] = useState(false);
+  const [asset, setAsset] = useState(null);
+  const [recentScans, setRecentScans] = useState(() => {
+    try {
+      const saved = window.localStorage.getItem(RECENT_SCAN_KEY);
+      return saved ? JSON.parse(saved) : [];
+    } catch {
+      return [];
+    }
+  });
+
+  useEffect(() => {
+    try {
+      window.localStorage.setItem(RECENT_SCAN_KEY, JSON.stringify(recentScans));
+    } catch {
+      // ignore local storage write issues
+    }
+  }, [recentScans]);
 
   const lookupTag = async (rawValue) => {
     setLookingUp(true);
     setError('');
     try {
-      // The QR payload is JSON like {"assetTag":"AST-000001","id":"..."} but we
-      // also accept a bare tag typed in manually, so try to parse first.
-      let tag = rawValue.trim();
+      let tag = String(rawValue || '').trim();
       try {
         const parsed = JSON.parse(rawValue);
         if (parsed.assetTag) tag = parsed.assetTag;
       } catch {
         // not JSON, treat as a plain tag string
       }
+
+      if (!tag) {
+        setError('Enter a valid asset tag or scan code first.');
+        return;
+      }
+
       const { data } = await client.get(`/assets/tag/${encodeURIComponent(tag)}`);
-      navigate(`/assets/${data.asset._id}`);
+      const foundAsset = data.asset;
+      setAsset(foundAsset);
+      setManualTag('');
+      setRecentScans((current) => {
+        const next = [
+          {
+            _id: foundAsset._id,
+            assetTag: foundAsset.assetTag,
+            name: foundAsset.name,
+            status: foundAsset.status,
+            location: foundAsset.location,
+          },
+          ...current.filter((item) => item.assetTag !== foundAsset.assetTag),
+        ].slice(0, 5);
+        return next;
+      });
     } catch (err) {
       setError(err.response?.data?.message || 'No asset found for that code');
     } finally {
@@ -73,14 +110,37 @@ export default function Scan() {
     setScanning(false);
   };
 
+  const detailRows = useMemo(() => {
+    if (!asset) return [];
+    return [
+      ['Asset tag', asset.assetTag],
+      ['Status', asset.status || 'unknown'],
+      ['Category', asset.category || '—'],
+      ['Location', asset.location || '—'],
+      ['Assigned to', asset.currentAssignment?.assignedTo?.name || 'Unassigned'],
+    ];
+  }, [asset]);
+
+  const copyTag = async () => {
+    if (!asset?.assetTag) return;
+    try {
+      await navigator.clipboard.writeText(asset.assetTag);
+      setError('Asset tag copied to clipboard.');
+    } catch {
+      setError('Clipboard access is unavailable in this browser.');
+    }
+  };
+
   return (
-    <div className="max-w-md">
-      <h1 className="stencil text-2xl font-bold text-zinc-50 mb-1">Scan Asset Tag</h1>
-      <p className="text-sm text-muted mb-6">Point your camera at a QR tag, or type it in manually.</p>
+    <div className="max-w-xl space-y-6">
+      <div>
+        <h1 className="stencil text-2xl font-bold text-zinc-50 mb-1">Scan Asset Tag</h1>
+        <p className="text-sm text-muted">Point your camera at a QR tag, or type it in manually.</p>
+      </div>
 
       <ErrorBanner message={error} />
 
-      <div className="card p-6 mb-6">
+      <div className="card p-6">
         <div id={SCANNER_ID} className="w-full aspect-square bg-panel2 rounded-sm overflow-hidden border border-line" />
         <div className="mt-4">
           {!scanning ? (
@@ -108,6 +168,56 @@ export default function Scan() {
           </button>
         </div>
       </div>
+
+      {asset && (
+        <div className="card p-6">
+          <div className="flex items-start justify-between gap-3">
+            <div>
+              <p className="dashboard-eyebrow">Latest match</p>
+              <h2 className="mt-2 text-xl font-semibold text-ink">{asset.name}</h2>
+            </div>
+            <div className="flex gap-2">
+              <button className="btn-outline text-xs" onClick={copyTag}>
+                Copy tag
+              </button>
+              <button className="btn-primary text-xs" onClick={() => navigate(`/assets/${asset._id}`)}>
+                Open asset
+              </button>
+            </div>
+          </div>
+
+          <div className="mt-4 grid gap-3 sm:grid-cols-2">
+            {detailRows.map(([label, value]) => (
+              <div key={label} className="rounded-lg border border-line bg-panel1 p-3">
+                <p className="text-[10px] uppercase tracking-[0.2em] text-muted">{label}</p>
+                <p className="mt-2 text-sm font-medium text-ink">{value}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {recentScans.length > 0 && (
+        <div className="card p-6">
+          <p className="dashboard-eyebrow">Recent scans</p>
+          <div className="mt-4 space-y-2">
+            {recentScans.map((item) => (
+              <button
+                key={`${item.assetTag}-${item._id}`}
+                type="button"
+                className="flex w-full items-center justify-between rounded-lg border border-line bg-panel1 px-3 py-2 text-left transition hover:border-brand/50"
+                onClick={() => lookupTag(item.assetTag)}
+              >
+                <div>
+                  <p className="text-sm font-medium text-ink">{item.name}</p>
+                  <p className="text-xs text-muted">{item.assetTag}</p>
+                </div>
+                <span className="text-xs text-muted">{item.status}</span>
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   );
 }

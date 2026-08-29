@@ -49,7 +49,7 @@ export default function DocumentVault({ assetId, documents, onChange }) {
     setLabel(file.name);
     setError('');
   };
-
+   
   const handleDrop = useCallback((e) => {
     e.preventDefault();
     setIsDragging(false);

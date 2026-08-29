@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useAuth } from '../context/AuthContext.jsx';
 import client from '../api/client.js';
+import ProfileAvatar from '../components/ProfileAvatar.jsx';
 
 function splitName(name = '') {
   const parts = name.trim().split(/\s+/).filter(Boolean);
@@ -91,8 +92,8 @@ export default function Profile() {
               <label className="label sm:col-span-2">Website<input type="url" className="input mt-2" placeholder="https://example.com" value={extras.website || ''} onChange={(e) => updateExtra('website', e.target.value)} /></label>
             </div>
             <div className="flex flex-col items-center gap-3 border-t border-line pt-5 sm:border-t-0 sm:pt-0">
-              <div className="grid h-40 w-40 place-items-center overflow-hidden rounded-md bg-[#dbeafe] text-5xl font-bold text-accent">
-                {avatar ? <img src={avatar} alt="Profile" className="h-full w-full object-cover" /> : (user?.name || 'A').slice(0, 1).toUpperCase()}
+              <div className="rounded-2xl border border-line bg-[#f8fafc] p-2 shadow-sm">
+                <ProfileAvatar user={{ ...user, avatar }} size="lg" />
               </div>
               <label className="btn-outline cursor-pointer text-xs">Select file<input type="file" accept="image/jpeg,image/png,image/webp,image/gif" className="sr-only" onChange={chooseAvatar} /></label>
               <p className="text-center text-[11px] leading-4 text-muted">JPG, PNG, GIF or WebP. Stored locally in this browser.</p>

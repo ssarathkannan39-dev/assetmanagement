@@ -3,6 +3,10 @@ import axios from 'axios';
 const client = axios.create({
   baseURL: '/api',
   withCredentials: true,
+  timeout: 15000,
+  headers: {
+    'X-Requested-With': 'XMLHttpRequest',
+  },
 });
 
 let accessToken = null;

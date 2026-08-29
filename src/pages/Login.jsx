@@ -35,41 +35,46 @@ export default function Login() {
           <div className="brand-banner">
             <div className="brand-banner-inner">
               <BrandMark />
-              <span className="brand-banner-tag">Inventory, made visible</span>
+              <span className="brand-banner-tag">Corporate asset operations</span>
             </div>
           </div>
 
-          <div className="space-y-4">
-            <p className="login-eyebrow">Operational visibility</p>
-            <h1 className="login-title">Track every asset with total clarity.</h1>
+          <div className="login-hero-content">
+            <div className="login-status">
+              <span className="status-dot" />
+              Secure access
+            </div>
+            <p className="login-eyebrow">Enterprise platform</p>
+            <h1 className="login-title">Command your asset portfolio from a premium operations hub.</h1>
             <p className="login-copy">
-              Manage inventory, maintenance, and movement across every site from one secure control center.
+              Centralize inventory, maintenance, compliance, and lifecycle intelligence through a secure enterprise SaaS workspace.
             </p>
           </div>
 
           <div className="login-metrics">
             <div>
               <strong>4.2K</strong>
-              <span>Assets monitored</span>
+              <span>Assets tracked</span>
             </div>
             <div>
-              <strong>98.6%</strong>
-              <span>Uptime score</span>
+              <strong>99.9%</strong>
+              <span>Operational uptime</span>
             </div>
           </div>
         </div>
 
         <div className="login-form-panel">
           <div className="login-form-header">
-            <p className="login-eyebrow text-[#1d4ed8]">Welcome back</p>
-            <h2>Sign in</h2>
+            <p className="login-kicker">Welcome back</p>
+            <h2>Sign in to Asset Manager</h2>
+            <p className="login-form-subtitle">Use your organization credentials to continue.</p>
           </div>
 
           <form onSubmit={handleSubmit} className="login-form">
             <ErrorBanner message={error} />
 
             <div className="field-group">
-              <label className="label">Email</label>
+              <label className="label">Work email</label>
               <input
                 className="input"
                 type="email"
@@ -105,14 +110,22 @@ export default function Login() {
               </div>
             </div>
 
+            <div className="login-meta">
+              <label className="remember-me">
+                <input type="checkbox" defaultChecked />
+                <span>Remember me</span>
+              </label>
+              <a href="#" className="login-link">Need help?</a>
+            </div>
+
             <button type="submit" className="btn-primary w-full" disabled={submitting}>
               {submitting ? 'Signing In…' : 'Sign In'}
             </button>
           </form>
 
           <div className="login-footer">
-            <div>Demo superadmin: <span>superadmin@gmail.com / super@123</span></div>
-            <div>No account yet? Run <code>npm run seed</code> on the server.</div>
+            <div><strong>Demo access:</strong> <span>superadmin@gmail.com / super@123</span></div>
+            <div>New to the system? Run <code>npm run seed</code> on the server.</div>
           </div>
         </div>
       </div>

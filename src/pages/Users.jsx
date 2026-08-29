@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import api from '../api/client.js';
 
 const PAGE_SIZE_OPTIONS = [10, 20, 50, 100];
@@ -35,7 +35,7 @@ export default function Users() {
   const [pageSize, setPageSize] = useState(20);
   const [selected, setSelected] = useState([]);
 
-  const loadUsers = async () => {
+  const loadUsers = useCallback(async () => {
     setLoading(true);
     setError('');
     try {
@@ -57,11 +57,11 @@ export default function Users() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [filter, search]);
 
   useEffect(() => {
     loadUsers();
-  }, [search, filter]);
+  }, [loadUsers]);
 
   const visibleUsers = useMemo(() => {
     const start = (page - 1) * pageSize;
